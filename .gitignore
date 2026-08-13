@@ -1,0 +1,19 @@
+# Node dependencies
+frontend/node_modules/
+node_modules/
+frontend/dist/
+
+# Python / Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+backend/db.sqlite3
+.env
+.venv/
+env/
+
+# IDE / System
+.vscode/
+.idea/
+.DS_Store
