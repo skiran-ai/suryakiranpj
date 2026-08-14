@@ -5,21 +5,24 @@ import json
 from django.db import connection
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions, generics
 from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.authtoken.models import Token
 
 from .models import (
     Profile, Project, Skill, Experience, Education, Certification,
     Achievement, SocialLink, Service, ContactMessage, SiteSetting,
-    AIKnowledgeDocument
+    AIKnowledgeDocument, AdminAuditLog
 )
 from .serializers import (
     ProfileSerializer, ProjectSerializer, SkillSerializer,
     ExperienceSerializer, EducationSerializer, CertificationSerializer,
     AchievementSerializer, SocialLinkSerializer, ServiceSerializer,
-    ContactMessageSerializer, SiteSettingSerializer
+    ContactMessageSerializer, SiteSettingSerializer, AIKnowledgeDocumentSerializer,
+    AdminAuditLogSerializer
 )
 
 # Helper function to check application-level Privacy & Maintenance Mode
@@ -45,12 +48,29 @@ def check_privacy_restriction():
         }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
     return None
 
+def log_admin_action(action, model_name, object_id="", details=None):
+    try:
+        AdminAuditLog.objects.create(
+            action=action,
+            model_name=model_name,
+            object_id=str(object_id),
+            details=details or {}
+        )
+    except Exception as e:
+        print(f"Audit log error: {e}")
+
+
+# ==============================================================================
+# PUBLIC API ENDPOINTS
+# ==============================================================================
 
 class SystemStatusView(APIView):
     """
     Public Health & Operational Status Monitoring Endpoint
     Returns real database ping, system mode, and AI provider readiness.
     """
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         start_time = time.time()
 
@@ -61,7 +81,7 @@ class SystemStatusView(APIView):
                 cursor.execute("SELECT 1")
                 row = cursor.fetchone()
                 db_ok = (row[0] == 1)
-        except Exception as e:
+        except Exception:
             db_ok = False
 
         latency = round((time.time() - start_time) * 1000, 2)
@@ -90,6 +110,8 @@ class SystemStatusView(APIView):
 
 
 class ProfileView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         restriction = check_privacy_restriction()
         if restriction:
@@ -104,6 +126,8 @@ class ProfileView(APIView):
 
 
 class ProjectListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         restriction = check_privacy_restriction()
         if restriction:
@@ -135,6 +159,8 @@ class ProjectListView(APIView):
 
 
 class ProjectDetailView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request, slug):
         restriction = check_privacy_restriction()
         if restriction:
@@ -149,6 +175,8 @@ class ProjectDetailView(APIView):
 
 
 class SkillListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         restriction = check_privacy_restriction()
         if restriction:
@@ -178,6 +206,8 @@ class SkillListView(APIView):
 
 
 class ExperienceListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         restriction = check_privacy_restriction()
         if restriction:
@@ -189,6 +219,8 @@ class ExperienceListView(APIView):
 
 
 class EducationListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         restriction = check_privacy_restriction()
         if restriction:
@@ -206,6 +238,8 @@ class EducationListView(APIView):
 
 
 class ServiceListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         restriction = check_privacy_restriction()
         if restriction:
@@ -217,6 +251,8 @@ class ServiceListView(APIView):
 
 
 class SocialLinkListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         restriction = check_privacy_restriction()
         if restriction:
@@ -228,6 +264,7 @@ class SocialLinkListView(APIView):
 
 
 class ContactSubmitView(APIView):
+    permission_classes = [permissions.AllowAny]
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = 'contact'
 
@@ -270,6 +307,8 @@ class ContactSubmitView(APIView):
 
 
 class CVMetadataView(APIView):
+    permission_classes = [permissions.AllowAny]
+
     def get(self, request):
         restriction = check_privacy_restriction()
         if restriction:
@@ -298,6 +337,7 @@ class ChatbotQueryView(APIView):
     KIRAN AI - Grounded Portfolio Assistant
     Supports standard Q&A plus RECRUITER, CLIENT, and DEVELOPER special modes.
     """
+    permission_classes = [permissions.AllowAny]
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = 'ai_chat'
 
@@ -310,7 +350,7 @@ class ChatbotQueryView(APIView):
             }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         user_msg = request.data.get('message', '').strip()
-        mode = request.data.get('mode', 'STANDARD').upper() # RECRUITER, CLIENT, DEVELOPER, STANDARD
+        mode = request.data.get('mode', 'STANDARD').upper()
 
         if len(user_msg) > 1000:
             return Response({
@@ -423,7 +463,6 @@ class ChatbotQueryView(APIView):
     def call_gemini_api(self, prompt, api_key):
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
         
-        # Build grounded context
         docs = AIKnowledgeDocument.objects.filter(is_active=True)
         knowledge_context = "\n---\n".join([f"[{d.title}]: {d.content}" for d in docs])
         
@@ -458,3 +497,447 @@ class ChatbotQueryView(APIView):
                 if parts:
                     return parts[0].get('text', '').strip()
         return None
+
+
+# ==============================================================================
+# PRIVATE ADMIN AUTHENTICATION & DASHBOARD ENDPOINTS
+# ==============================================================================
+
+class AdminLoginView(APIView):
+    """
+    POST /api/admin/login/
+    Authenticates staff/admin user and returns secure auth token.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        username = request.data.get('username', '').strip()
+        password = request.data.get('password', '').strip()
+
+        if not username or not password:
+            return Response({
+                "success": False,
+                "message": "Please provide both username and password."
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        user = authenticate(request, username=username, password=password)
+        if not user:
+            return Response({
+                "success": False,
+                "message": "Invalid username or password credentials."
+            }, status=status.HTTP_401_UNAUTHORIZED)
+
+        if not user.is_active:
+            return Response({
+                "success": False,
+                "message": "User account has been deactivated."
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        if not (user.is_staff or user.is_superuser):
+            return Response({
+                "success": False,
+                "message": "Access denied. Administrator privileges required."
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # Issue/get auth token
+        token, _ = Token.objects.get_or_create(user=user)
+        log_admin_action('LOGIN', 'User', user.id, {'username': user.username})
+
+        return Response({
+            "success": True,
+            "token": token.key,
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "is_staff": user.is_staff,
+                "is_superuser": user.is_superuser
+            },
+            "message": f"Welcome back, {user.username}!"
+        }, status=status.HTTP_200_OK)
+
+
+class AdminLogoutView(APIView):
+    """
+    POST /api/admin/logout/
+    Destroys active authentication token on logout.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        if request.user.is_authenticated:
+            Token.objects.filter(user=request.user).delete()
+            log_admin_action('LOGOUT', 'User', request.user.id, {'username': request.user.username})
+        return Response({"success": True, "message": "Logged out successfully."}, status=status.HTTP_200_OK)
+
+
+class AdminMeView(APIView):
+    """
+    GET /api/admin/me/
+    Validates current admin session & returns user details.
+    """
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    def get(self, request):
+        user = request.user
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "is_staff": user.is_staff,
+            "is_superuser": user.is_superuser
+        })
+
+
+class AdminStatsView(APIView):
+    """
+    GET /api/admin/stats/
+    Returns aggregated stats for the admin dashboard home.
+    """
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    def get(self, request):
+        projects_qs = Project.objects.all()
+        setting = get_site_setting()
+
+        recent_projects = ProjectSerializer(projects_qs.order_by('-created_at')[:5], many=True).data
+        recent_messages = ContactMessageSerializer(ContactMessage.objects.all().order_by('-created_at')[:5], many=True).data
+
+        return Response({
+            "counts": {
+                "projects_total": projects_qs.count(),
+                "projects_published": projects_qs.filter(status='Published').count(),
+                "projects_draft": projects_qs.filter(status='Draft').count(),
+                "projects_featured": projects_qs.filter(featured=True).count(),
+                "skills": Skill.objects.count(),
+                "services": Service.objects.count(),
+                "experience": Experience.objects.count(),
+                "education": Education.objects.count(),
+                "certifications": Certification.objects.count(),
+                "achievements": Achievement.objects.count(),
+                "social_links": SocialLink.objects.count(),
+                "ai_documents": AIKnowledgeDocument.objects.count(),
+                "unread_messages": ContactMessage.objects.filter(is_read=False).count(),
+                "total_messages": ContactMessage.objects.count()
+            },
+            "system": {
+                "privacy_mode": setting.privacy_mode,
+                "allow_contact_form": setting.allow_contact_form,
+                "allow_ai_assistant": setting.allow_ai_assistant,
+                "maintenance_message": setting.maintenance_message
+            },
+            "recent_projects": recent_projects,
+            "recent_messages": recent_messages
+        })
+
+
+# ==============================================================================
+# ADMIN CRUD VIEWSETS & VIEWS
+# ==============================================================================
+
+# Projects Management
+class AdminProjectListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'Project', instance.id, {'title': instance.title, 'slug': instance.slug})
+
+
+class AdminProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'Project', instance.id, {'title': instance.title, 'status': instance.status})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'Project', instance.id, {'title': instance.title, 'slug': instance.slug})
+        instance.delete()
+
+
+# Skills Management
+class AdminSkillListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = SkillSerializer
+    queryset = Skill.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'Skill', instance.id, {'name': instance.name, 'category': instance.category})
+
+
+class AdminSkillDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = SkillSerializer
+    queryset = Skill.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'Skill', instance.id, {'name': instance.name})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'Skill', instance.id, {'name': instance.name})
+        instance.delete()
+
+
+# Services Management
+class AdminServiceListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = ServiceSerializer
+    queryset = Service.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'Service', instance.id, {'title': instance.title})
+
+
+class AdminServiceDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = ServiceSerializer
+    queryset = Service.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'Service', instance.id, {'title': instance.title})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'Service', instance.id, {'title': instance.title})
+        instance.delete()
+
+
+# Experience Management
+class AdminExperienceListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = ExperienceSerializer
+    queryset = Experience.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'Experience', instance.id, {'company': instance.company, 'role': instance.role})
+
+
+class AdminExperienceDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = ExperienceSerializer
+    queryset = Experience.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'Experience', instance.id, {'company': instance.company, 'role': instance.role})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'Experience', instance.id, {'company': instance.company, 'role': instance.role})
+        instance.delete()
+
+
+# Education Management
+class AdminEducationListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = EducationSerializer
+    queryset = Education.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'Education', instance.id, {'institution': instance.institution, 'degree': instance.degree})
+
+
+class AdminEducationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = EducationSerializer
+    queryset = Education.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'Education', instance.id, {'institution': instance.institution, 'degree': instance.degree})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'Education', instance.id, {'institution': instance.institution, 'degree': instance.degree})
+        instance.delete()
+
+
+# Certifications Management
+class AdminCertificationListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = CertificationSerializer
+    queryset = Certification.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'Certification', instance.id, {'title': instance.title})
+
+
+class AdminCertificationDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = CertificationSerializer
+    queryset = Certification.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'Certification', instance.id, {'title': instance.title})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'Certification', instance.id, {'title': instance.title})
+        instance.delete()
+
+
+# Achievements Management
+class AdminAchievementListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = AchievementSerializer
+    queryset = Achievement.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'Achievement', instance.id, {'title': instance.title})
+
+
+class AdminAchievementDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = AchievementSerializer
+    queryset = Achievement.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'Achievement', instance.id, {'title': instance.title})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'Achievement', instance.id, {'title': instance.title})
+        instance.delete()
+
+
+# Social Links Management
+class AdminSocialLinkListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = SocialLinkSerializer
+    queryset = SocialLink.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'SocialLink', instance.id, {'platform': instance.platform})
+
+
+class AdminSocialLinkDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = SocialLinkSerializer
+    queryset = SocialLink.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'SocialLink', instance.id, {'platform': instance.platform})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'SocialLink', instance.id, {'platform': instance.platform})
+        instance.delete()
+
+
+# Profile Management
+class AdminProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    def get(self, request):
+        profile = Profile.objects.first()
+        if not profile:
+            profile = Profile.objects.create(name="Suryakiran P. J.")
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def put(self, request):
+        profile = Profile.objects.first()
+        if not profile:
+            profile = Profile.objects.create(name="Suryakiran P. J.")
+        serializer = ProfileSerializer(profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            log_admin_action('UPDATE', 'Profile', profile.id, {'name': profile.name})
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request):
+        profile = Profile.objects.first()
+        if not profile:
+            profile = Profile.objects.create(name="Suryakiran P. J.")
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            log_admin_action('UPDATE_PARTIAL', 'Profile', profile.id, {'name': profile.name})
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# AI Knowledge Documents Management
+class AdminAIKnowledgeListCreateView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = AIKnowledgeDocumentSerializer
+    queryset = AIKnowledgeDocument.objects.all()
+
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        log_admin_action('CREATE', 'AIKnowledgeDocument', instance.id, {'title': instance.title, 'topic': instance.topic})
+
+
+class AdminAIKnowledgeDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = AIKnowledgeDocumentSerializer
+    queryset = AIKnowledgeDocument.objects.all()
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        log_admin_action('UPDATE', 'AIKnowledgeDocument', instance.id, {'title': instance.title})
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'AIKnowledgeDocument', instance.id, {'title': instance.title})
+        instance.delete()
+
+
+# Contact Messages Management
+class AdminContactMessageListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = ContactMessageSerializer
+
+    def get_queryset(self):
+        queryset = ContactMessage.objects.all()
+        unread_only = self.request.query_params.get('unread')
+        if unread_only and unread_only.lower() in ('true', '1'):
+            queryset = queryset.filter(is_read=False)
+        return queryset
+
+
+class AdminContactMessageDetailView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = ContactMessageSerializer
+    queryset = ContactMessage.objects.all()
+
+    def perform_destroy(self, instance):
+        log_admin_action('DELETE', 'ContactMessage', instance.id, {'sender': instance.email})
+        instance.delete()
+
+
+# Site Settings Management
+class AdminSiteSettingView(APIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+
+    def get(self, request):
+        setting = get_site_setting()
+        serializer = SiteSettingSerializer(setting)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        setting = get_site_setting()
+        serializer = SiteSettingSerializer(setting, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            log_admin_action('UPDATE_SETTING', 'SiteSetting', setting.id, request.data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Audit Logs
+class AdminAuditLogListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    serializer_class = AdminAuditLogSerializer
+    queryset = AdminAuditLog.objects.all()[:100]

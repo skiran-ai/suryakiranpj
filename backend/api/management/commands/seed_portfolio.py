@@ -5,15 +5,14 @@ from api.models import (
     Achievement, SocialLink, Service, SiteSetting, AIKnowledgeDocument
 )
 
-
 class Command(BaseCommand):
-    help = 'Seeds or updates initial portfolio data for Suryakiran P. J. in an idempotent manner.'
+    help = 'Safely seeds initial portfolio data for Suryakiran P. J. without duplicating or overwriting existing records.'
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS("Starting idempotent portfolio database seeding..."))
+        self.stdout.write(self.style.SUCCESS("Starting safe, idempotent database seeding..."))
 
-        # 1. Profile (Exactly ONE record)
-        profile_data = {
+        # 1. Profile (Preserve admin changes if record already exists)
+        profile_defaults = {
             "name": "Suryakiran P. J.",
             "role": "Python Full Stack Developer",
             "tagline": "Building modern, responsive and scalable web experiences with Python, Django, and React.",
@@ -26,13 +25,13 @@ class Command(BaseCommand):
             "availability": "Available for Full-time Roles & High-Impact Projects",
             "is_active": True
         }
-        profile_obj, created = Profile.objects.update_or_create(
+        profile_obj, created = Profile.objects.get_or_create(
             email="suryakiranpjineesh@gmail.com",
-            defaults=profile_data
+            defaults=profile_defaults
         )
-        self.stdout.write(f"Profile: {'Created' if created else 'Updated'} successfully ({profile_obj.name}).")
+        self.stdout.write(f"Profile: {'Created' if created else 'Already exists (preserved)'}.")
 
-        # 2. Site Setting & Privacy Switch (Idempotent - preserves default PUBLIC mode)
+        # 2. Site Setting & Privacy Switch (Idempotent - never resets custom admin mode)
         site_defaults = {
             "privacy_mode": 'PUBLIC',
             "maintenance_message": "System undergoing planned architecture updates. Public API endpoints are temporarily guarded.",
@@ -43,7 +42,7 @@ class Command(BaseCommand):
             id=1,
             defaults=site_defaults
         )
-        self.stdout.write(f"Site Setting: {'Created' if created else 'Already exists (preserved)'} [Mode: {setting_obj.privacy_mode}].")
+        self.stdout.write(f"Site Setting: {'Created' if created else 'Already exists (preserved)'}.")
 
         # 3. Social Links
         socials = [
@@ -53,11 +52,11 @@ class Command(BaseCommand):
             {"platform": "Email", "url": "mailto:suryakiranpjineesh@gmail.com", "icon_name": "Mail", "order": 4, "is_visible": True},
         ]
         for s in socials:
-            SocialLink.objects.update_or_create(
+            SocialLink.objects.get_or_create(
                 platform=s["platform"],
                 defaults=s
             )
-        self.stdout.write(f"Social Links: {len(socials)} records verified/updated.")
+        self.stdout.write("Social Links verified/seeded.")
 
         # 4. Skills
         skills = [
@@ -87,15 +86,15 @@ class Command(BaseCommand):
             {"name": "Full Stack Architecture", "category": "development", "badge": "End-to-End Frontend/Backend Integration", "icon_name": "Layers", "proficiency": 89, "order": 4},
         ]
         for sk in skills:
-            Skill.objects.update_or_create(
+            Skill.objects.get_or_create(
                 name=sk["name"],
                 category=sk["category"],
                 defaults=sk
             )
-        self.stdout.write(f"Skills: {len(skills)} records verified/updated.")
+        self.stdout.write("Skills verified/seeded.")
 
         # 5. Education
-        Education.objects.update_or_create(
+        Education.objects.get_or_create(
             institution="MG University",
             degree="Bachelor of Science in Computer Science",
             defaults={
@@ -107,10 +106,10 @@ class Command(BaseCommand):
                 "order": 1
             }
         )
-        self.stdout.write("Education: verified/updated.")
+        self.stdout.write("Education verified/seeded.")
 
         # 6. Experience
-        Experience.objects.update_or_create(
+        Experience.objects.get_or_create(
             company="Independent Software Engineering",
             role="Python Full Stack Developer",
             defaults={
@@ -126,10 +125,10 @@ class Command(BaseCommand):
                 "order": 1
             }
         )
-        self.stdout.write("Experience: verified/updated.")
+        self.stdout.write("Experience verified/seeded.")
 
         # 7. Certifications
-        Certification.objects.update_or_create(
+        Certification.objects.get_or_create(
             title="Python & Django Full Stack Engineering",
             issuing_organization="Full Stack Software Academy",
             defaults={
@@ -139,10 +138,10 @@ class Command(BaseCommand):
                 "order": 1
             }
         )
-        self.stdout.write("Certifications: verified/updated.")
+        self.stdout.write("Certifications verified/seeded.")
 
         # 8. Achievements
-        Achievement.objects.update_or_create(
+        Achievement.objects.get_or_create(
             title="B.Sc. Computer Science Graduate with Honors",
             defaults={
                 "description": "Successfully completed degree at MG University with distinction in software engineering and database projects.",
@@ -151,9 +150,9 @@ class Command(BaseCommand):
                 "order": 1
             }
         )
-        self.stdout.write("Achievements: verified/updated.")
+        self.stdout.write("Achievements verified/seeded.")
 
-        # 9. Projects (6 Authentic Portfolio Projects)
+        # 9. Projects
         projects_data = [
             {
                 "slug": "devnexus",
@@ -320,11 +319,11 @@ class Command(BaseCommand):
         ]
 
         for p in projects_data:
-            Project.objects.update_or_create(
+            Project.objects.get_or_create(
                 slug=p["slug"],
                 defaults=p
             )
-        self.stdout.write(f"Projects: {len(projects_data)} records verified/updated.")
+        self.stdout.write("Projects verified/seeded.")
 
         # 10. Services
         services_data = [
@@ -354,11 +353,11 @@ class Command(BaseCommand):
             }
         ]
         for s in services_data:
-            Service.objects.update_or_create(
+            Service.objects.get_or_create(
                 title=s["title"],
                 defaults=s
             )
-        self.stdout.write(f"Services: {len(services_data)} records verified/updated.")
+        self.stdout.write("Services verified/seeded.")
 
         # 11. AI Knowledge Documents
         ai_docs = [
@@ -399,11 +398,11 @@ class Command(BaseCommand):
             }
         ]
         for doc in ai_docs:
-            AIKnowledgeDocument.objects.update_or_create(
+            AIKnowledgeDocument.objects.get_or_create(
                 title=doc["title"],
                 topic=doc["topic"],
                 defaults=doc
             )
-        self.stdout.write(f"AI Knowledge Documents: {len(ai_docs)} records verified/updated.")
+        self.stdout.write("AI Knowledge Documents verified/seeded.")
 
-        self.stdout.write(self.style.SUCCESS("Portfolio database seeding completed successfully and idempotently!"))
+        self.stdout.write(self.style.SUCCESS("Safe database seeding verified successfully!"))

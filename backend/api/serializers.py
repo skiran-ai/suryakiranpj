@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import (
     Profile, Project, Skill, Experience, Education, Certification,
-    Achievement, SocialLink, Service, ContactMessage, SiteSetting
+    Achievement, SocialLink, Service, ContactMessage, SiteSetting,
+    AIKnowledgeDocument, AdminAuditLog
 )
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -10,7 +11,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'role', 'tagline', 'summary', 'email', 'location',
             'avatar_url', 'github_url', 'linkedin_url', 'instagram_url',
-            'resume_pdf_url', 'availability', 'is_active', 'updated_at'
+            'resume_pdf_url', 'availability', 'is_active', 'created_at', 'updated_at'
         ]
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -23,6 +24,16 @@ class ProjectSerializer(serializers.ModelSerializer):
             'order', 'status', 'frontend_tech', 'backend_tech', 'database_tech',
             'deployment_tech', 'created_at', 'updated_at'
         ]
+
+    def validate_title(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Project title cannot be empty.")
+        return value.strip()
+
+    def validate_slug(self, value):
+        if not value or not value.strip():
+            raise serializers.ValidationError("Slug cannot be empty.")
+        return value.strip().lower()
 
 class SkillSerializer(serializers.ModelSerializer):
     category_display = serializers.CharField(source='get_category_display', read_only=True)
@@ -64,7 +75,8 @@ class ServiceSerializer(serializers.ModelSerializer):
 class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactMessage
-        fields = ['id', 'name', 'email', 'subject', 'message', 'created_at']
+        fields = ['id', 'name', 'email', 'subject', 'message', 'ip_address', 'is_read', 'created_at']
+        read_only_fields = ['created_at', 'ip_address']
 
     def validate_email(self, value):
         if not value or '@' not in value:
@@ -99,3 +111,15 @@ class SiteSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteSetting
         fields = ['privacy_mode', 'maintenance_message', 'allow_contact_form', 'allow_ai_assistant', 'updated_at']
+
+class AIKnowledgeDocumentSerializer(serializers.ModelSerializer):
+    topic_display = serializers.CharField(source='get_topic_display', read_only=True)
+
+    class Meta:
+        model = AIKnowledgeDocument
+        fields = ['id', 'title', 'topic', 'topic_display', 'keywords', 'content', 'is_active', 'priority', 'created_at']
+
+class AdminAuditLogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdminAuditLog
+        fields = ['id', 'action', 'model_name', 'object_id', 'details', 'timestamp']

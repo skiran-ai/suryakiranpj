@@ -7,7 +7,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-development-fallback-key-for-local-runs-only')
 
 DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() in ('true', '1', 't')
 
@@ -22,8 +22,12 @@ else:
         'www.suryakiranpj.com',
         'localhost',
         '127.0.0.1',
-        '[::1]'
-    ] if not DEBUG else ['localhost', '127.0.0.1', '[::1]', '*']
+        '[::1]',
+        'testserver'
+    ] if not DEBUG else ['localhost', '127.0.0.1', '[::1]', 'testserver', '*']
+
+if 'testserver' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('testserver')
 
 render_external_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if render_external_hostname and render_external_hostname not in ALLOWED_HOSTS:
@@ -46,6 +50,7 @@ INSTALLED_APPS = [
 
     # Third party apps
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 
     # Portfolio API app
@@ -149,12 +154,13 @@ else:
     CORS_ALLOWED_ORIGINS = [
         'https://suryakiranpj.com',
         'https://www.suryakiranpj.com',
+        'https://suryakiranpj.netlify.app',
         'http://localhost:5173',
         'http://127.0.0.1:5173',
     ]
 
 # Ensure production domains are included
-for prod_origin in ['https://suryakiranpj.com', 'https://www.suryakiranpj.com']:
+for prod_origin in ['https://suryakiranpj.com', 'https://www.suryakiranpj.com', 'https://suryakiranpj.netlify.app']:
     if prod_origin not in CORS_ALLOWED_ORIGINS:
         CORS_ALLOWED_ORIGINS.append(prod_origin)
 
@@ -168,12 +174,13 @@ else:
     CSRF_TRUSTED_ORIGINS = [
         'https://suryakiranpj.com',
         'https://www.suryakiranpj.com',
+        'https://suryakiranpj.netlify.app',
         'http://localhost:5173',
         'http://127.0.0.1:5173',
     ]
 
 # Ensure production domains are included
-for prod_origin in ['https://suryakiranpj.com', 'https://www.suryakiranpj.com']:
+for prod_origin in ['https://suryakiranpj.com', 'https://www.suryakiranpj.com', 'https://suryakiranpj.netlify.app']:
     if prod_origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(prod_origin)
 
@@ -191,8 +198,12 @@ if not DEBUG:
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
 
-# REST Framework Settings with Throttling
+# REST Framework Settings with Authentication & Throttling
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
