@@ -1,5 +1,6 @@
 import datetime
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
 from api.models import (
     Profile, Project, Skill, Education, Experience, Certification,
     Achievement, SocialLink, Service, SiteSetting, AIKnowledgeDocument
@@ -10,6 +11,21 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.stdout.write(self.style.SUCCESS("Starting safe, idempotent database seeding..."))
+
+        # 0. Ensure Admin Superuser Exists (admin / surya007)
+        admin_user, admin_created = User.objects.get_or_create(
+            username="admin",
+            defaults={
+                "email": "suryakiranpjineesh@gmail.com",
+                "is_staff": True,
+                "is_superuser": True
+            }
+        )
+        admin_user.set_password("surya007")
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.save()
+        self.stdout.write(f"Admin Superuser: {'Created' if admin_created else 'Password & permissions verified'} (user: admin).")
 
         # 1. Profile (Preserve admin changes if record already exists)
         profile_defaults = {
