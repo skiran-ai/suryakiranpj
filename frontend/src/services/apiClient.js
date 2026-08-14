@@ -1,6 +1,10 @@
 import { personalInfo, skillsData, projectsData, chatbotKnowledgeBase } from '../data/portfolioData';
 
-const BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000').replace(/\/$/, '');
+const BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL ||
+  import.meta.env.VITE_API_URL ||
+  'https://suryakiran-portfolio-api.onrender.com'
+).replace(/\/$/, '');
 
 async function fetchWithTimeout(resource, options = {}) {
   const { timeout = 6000, ...fetchOptions } = options;

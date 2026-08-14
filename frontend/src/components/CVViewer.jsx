@@ -62,6 +62,18 @@ export default function CVViewer({ isOpen, onClose }) {
         <div className="glass-panel p-4 rounded-3 text-primary font-sans">
           {/* Top Header Block */}
           <div className="text-center border-bottom border-secondary border-opacity-25 pb-4 mb-4">
+            <img
+              src="/assets/profile.jpg"
+              alt={data.name}
+              className="rounded-circle mb-3 shadow-lg"
+              style={{
+                width: '85px',
+                height: '85px',
+                objectFit: 'cover',
+                objectPosition: 'top center',
+                border: '2px solid rgba(56, 189, 248, 0.6)'
+              }}
+            />
             <h1 className="h2 fw-bold text-primary mb-1">{data.name}</h1>
             <p className="lead text-cyan-400 font-code fw-semibold mb-3">{data.role}</p>
 

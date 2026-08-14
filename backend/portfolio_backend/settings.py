@@ -15,7 +15,15 @@ allowed_hosts_raw = os.getenv('DJANGO_ALLOWED_HOSTS', '')
 if allowed_hosts_raw:
     ALLOWED_HOSTS = [h.strip() for h in allowed_hosts_raw.split(',') if h.strip()]
 else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]'] if not DEBUG else ['localhost', '127.0.0.1', '[::1]', '*']
+    ALLOWED_HOSTS = [
+        'suryakiran-portfolio-api.onrender.com',
+        'api.suryakiranpj.com',
+        'suryakiranpj.com',
+        'www.suryakiranpj.com',
+        'localhost',
+        '127.0.0.1',
+        '[::1]'
+    ] if not DEBUG else ['localhost', '127.0.0.1', '[::1]', '*']
 
 render_external_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if render_external_hostname and render_external_hostname not in ALLOWED_HOSTS:
@@ -137,11 +145,18 @@ if cors_origins_raw:
     CORS_ALLOWED_ORIGINS = [o.strip() for o in cors_origins_raw.split(',') if o.strip()]
     CORS_ALLOW_ALL_ORIGINS = False
 else:
-    CORS_ALLOW_ALL_ORIGINS = os.getenv('CORS_ALLOW_ALL_ORIGINS', 'True' if DEBUG else 'False').lower() in ('true', '1')
+    CORS_ALLOW_ALL_ORIGINS = False
     CORS_ALLOWED_ORIGINS = [
+        'https://suryakiranpj.com',
+        'https://www.suryakiranpj.com',
         'http://localhost:5173',
         'http://127.0.0.1:5173',
     ]
+
+# Ensure production domains are included
+for prod_origin in ['https://suryakiranpj.com', 'https://www.suryakiranpj.com']:
+    if prod_origin not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(prod_origin)
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -151,9 +166,16 @@ if csrf_origins_raw:
     CSRF_TRUSTED_ORIGINS = [c.strip() for c in csrf_origins_raw.split(',') if c.strip()]
 else:
     CSRF_TRUSTED_ORIGINS = [
+        'https://suryakiranpj.com',
+        'https://www.suryakiranpj.com',
         'http://localhost:5173',
         'http://127.0.0.1:5173',
     ]
+
+# Ensure production domains are included
+for prod_origin in ['https://suryakiranpj.com', 'https://www.suryakiranpj.com']:
+    if prod_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(prod_origin)
 
 # Security Headers & Cookies
 SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False').lower() in ('true', '1')

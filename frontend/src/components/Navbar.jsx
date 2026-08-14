@@ -3,6 +3,7 @@ import { Terminal, Command, FileText, Sun, Moon, Menu, X, Sparkles } from 'lucid
 
 export default function Navbar({ theme, toggleTheme, onOpenCV, onOpenCommandPalette, onOpenAIWithMode }) {
   const [navOpen, setNavOpen] = useState(false);
+  const [aiDropdownOpen, setAiDropdownOpen] = useState(false);
 
   return (
     <nav className="navbar navbar-expand-lg fixed-top glass-nav py-3" style={{ zIndex: 1030 }}>
@@ -45,33 +46,56 @@ export default function Navbar({ theme, toggleTheme, onOpenCV, onOpenCommandPale
             </li>
 
             {/* Special AI Modes Menu Dropdown */}
-            <li className="nav-item dropdown">
+            <li className="nav-item dropdown position-relative">
               <button
-                className="btn btn-outline-brand btn-sm dropdown-toggle rounded-pill px-3 py-1.5 d-flex align-items-center gap-1 font-code"
+                className={`btn btn-outline-brand btn-sm dropdown-toggle rounded-pill px-3 py-1.5 d-flex align-items-center gap-1 font-code ${aiDropdownOpen ? 'show' : ''}`}
                 type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
+                onClick={() => setAiDropdownOpen(!aiDropdownOpen)}
+                aria-expanded={aiDropdownOpen}
               >
                 <Sparkles size={14} />
                 <span>AI Modes</span>
               </button>
-              <ul className="dropdown-menu glass-panel shadow-lg border-0 font-code p-2">
-                <li>
-                  <button className="dropdown-item rounded small text-primary" onClick={() => onOpenAIWithMode('RECRUITER')}>
-                    📋 Recruiter Mode
-                  </button>
-                </li>
-                <li>
-                  <button className="dropdown-item rounded small text-primary" onClick={() => onOpenAIWithMode('CLIENT')}>
-                    💼 Client Mode
-                  </button>
-                </li>
-                <li>
-                  <button className="dropdown-item rounded small text-primary" onClick={() => onOpenAIWithMode('DEVELOPER')}>
-                    ⚙️ Developer Mode
-                  </button>
-                </li>
-              </ul>
+              {aiDropdownOpen && (
+                <ul className="dropdown-menu show glass-panel shadow-lg border-0 font-code p-2 position-absolute end-0 mt-2" style={{ minWidth: '180px', zIndex: 1050 }}>
+                  <li>
+                    <button
+                      className="dropdown-item rounded small text-primary py-2 d-flex align-items-center gap-2"
+                      onClick={() => {
+                        onOpenAIWithMode('RECRUITER');
+                        setAiDropdownOpen(false);
+                        setNavOpen(false);
+                      }}
+                    >
+                      <span>📋</span> Recruiter Mode
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item rounded small text-primary py-2 d-flex align-items-center gap-2"
+                      onClick={() => {
+                        onOpenAIWithMode('CLIENT');
+                        setAiDropdownOpen(false);
+                        setNavOpen(false);
+                      }}
+                    >
+                      <span>💼</span> Client Mode
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className="dropdown-item rounded small text-primary py-2 d-flex align-items-center gap-2"
+                      onClick={() => {
+                        onOpenAIWithMode('DEVELOPER');
+                        setAiDropdownOpen(false);
+                        setNavOpen(false);
+                      }}
+                    >
+                      <span>⚙️</span> Developer Mode
+                    </button>
+                  </li>
+                </ul>
+              )}
             </li>
 
             {/* Command Palette Trigger */}
