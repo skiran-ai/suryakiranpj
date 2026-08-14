@@ -1,111 +1,83 @@
-import React from 'react';
-import { ArrowDown, FileText, Send, Sparkles, Code, Terminal } from 'lucide-react';
-import { personalInfo } from '../data/portfolioData';
-import SocialLinks from './SocialLinks';
+import React, { lazy, Suspense } from 'react';
+import { ArrowRight, FileText, Command } from 'lucide-react';
 
-export default function Hero({ onOpenCV }) {
+const ThreeHeroCanvas = lazy(() => import('./ThreeHeroCanvas'));
+
+export default function Hero({ onOpenCV, onOpenCommandPalette, isReducedMotion }) {
   return (
-    <section id="home" className="min-vh-100 d-flex align-items-center position-relative pt-5">
-      {/* Dynamic Background Glow Orbs */}
-      <div
-        className="position-absolute rounded-circle filter-blur"
-        style={{
-          top: '20%',
-          left: '10%',
-          width: '300px',
-          height: '300px',
-          background: 'rgba(6, 182, 212, 0.12)',
-          filter: 'blur(90px)',
-          pointerEvents: 'none',
-          zIndex: 0
-        }}
-      />
-      <div
-        className="position-absolute rounded-circle filter-blur"
-        style={{
-          bottom: '20%',
-          right: '10%',
-          width: '350px',
-          height: '350px',
-          background: 'rgba(139, 92, 246, 0.12)',
-          filter: 'blur(100px)',
-          pointerEvents: 'none',
-          zIndex: 0
-        }}
-      />
+    <section id="hero" className="position-relative min-vh-100 d-flex align-items-center justify-content-center overflow-hidden pt-5">
+      {/* 3D WebGL Canvas Background with graceful Suspense fallback */}
+      <Suspense
+        fallback={
+          <div
+            className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle at 50% 30%, rgba(56, 189, 248, 0.15) 0%, rgba(10, 12, 22, 1) 70%)',
+              zIndex: 0
+            }}
+          />
+        }
+      >
+        <ThreeHeroCanvas isReducedMotion={isReducedMotion} />
+      </Suspense>
 
-      <div className="container position-relative" style={{ zIndex: 1 }}>
-        <div className="row align-items-center gy-5">
-          {/* Text Content Left Side */}
-          <div className="col-lg-7 text-center text-lg-start">
-            <div className="badge-brand mb-3">
-              <Sparkles size={16} />
-              <span>{personalInfo.role}</span>
-            </div>
-
-            <h1 className="display-3 fw-extrabold mb-3">
-              Hi, I'm <span className="text-gradient">{personalInfo.name}</span>
-            </h1>
-
-            <h2 className="h3 text-secondary fw-semibold mb-4">
-              Python Full Stack Developer
-            </h2>
-
-            <p className="lead text-secondary mb-4 max-w-2xl">
-              {personalInfo.tagline}
-            </p>
-
-            <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start gap-3 mb-4">
-              <a href="#projects" className="btn btn-brand">
-                <Code size={18} />
-                <span>View Projects</span>
-              </a>
-
-              <button onClick={onOpenCV} className="btn btn-outline-brand">
-                <FileText size={18} />
-                <span>View CV</span>
-              </button>
-
-              <a href="#contact" className="btn btn-outline-brand">
-                <Send size={18} />
-                <span>Contact Me</span>
-              </a>
-            </div>
-
-            <div className="d-flex align-items-center justify-content-center justify-content-lg-start gap-3 pt-2">
-              <span className="small text-muted fw-semibold">Connect with me:</span>
-              <SocialLinks iconSize={18} />
-            </div>
+      <div className="container position-relative z-1 text-center py-5">
+        <div className="max-w-900 mx-auto">
+          {/* Status Badge */}
+          <div className="d-inline-flex align-items-center gap-2 badge-brand mb-4 py-2 px-4 rounded-pill shadow-lg animate-fade-in font-code">
+            <span className="rounded-circle bg-emerald-400 d-inline-block pulse-animation" style={{ width: '8px', height: '8px' }}></span>
+            <span className="text-uppercase tracking-wider">Available for Full-time Roles & Remote Projects</span>
           </div>
 
-          {/* Profile Image Frame Right Side */}
-          <div className="col-lg-5 text-center">
-            <div className="hero-image-wrapper">
-              <div className="hero-image-inner">
-                <img
-                  src="/assets/profile.jpg"
-                  alt={personalInfo.name}
-                  onError={(e) => {
-                    // Fallback to avatar if asset missing
-                    e.target.onerror = null;
-                    e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80";
-                  }}
-                />
+          {/* Main Title Identity Reveal */}
+          <h1 className="display-2 font-bold mb-3 tracking-tight text-white hero-title">
+            SURYAKIRAN P. J.
+          </h1>
+
+          <h2 className="display-6 font-semibold mb-4 text-gradient font-code">
+            PYTHON FULL STACK DEVELOPER
+          </h2>
+
+          <p className="lead text-secondary mb-5 max-w-750 mx-auto" style={{ fontSize: '1.2rem', lineHeight: '1.7' }}>
+            Building production-grade full-stack web platforms with <strong className="text-primary">Python, Django REST Framework</strong>, and high-performance <strong className="text-primary">React.js</strong> user interfaces.
+          </p>
+
+          {/* Action CTAs */}
+          <div className="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-5 font-code">
+            <a href="#projects" className="btn btn-brand btn-lg px-4 py-3 rounded-pill d-flex align-items-center gap-2 shadow-lg">
+              <span>Explore Projects</span>
+              <ArrowRight size={18} />
+            </a>
+
+            <button onClick={onOpenCV} className="btn btn-outline-brand btn-lg px-4 py-3 rounded-pill d-flex align-items-center gap-2">
+              <FileText size={18} />
+              <span>View & Download CV</span>
+            </button>
+
+            <button onClick={onOpenCommandPalette} className="btn btn-outline-brand btn-lg px-3 py-3 rounded-circle" title="Open Command Palette (Ctrl+K)">
+              <Command size={20} />
+            </button>
+          </div>
+
+          {/* Key Metrics / Highlights Grid */}
+          <div className="row gy-3 justify-content-center max-w-900 mx-auto font-code">
+            {[
+              { label: "Frontend Stack", val: "React.js & JS ES6+", desc: "Stateful Component Architecture" },
+              { label: "Backend Core", val: "Python & Django", desc: "RESTful APIs & Database ORM" },
+              { label: "API Engineering", val: "Django REST Framework", desc: "Throttling, Auth & JSON Specs" },
+              { label: "Full Stack Vision", val: "End-to-End Systems", desc: "Decoupled Scalable Architecture" }
+            ].map((stat, idx) => (
+              <div key={idx} className="col-6 col-md-3">
+                <div className="glass-card p-3 h-100 text-center hover-glow">
+                  <div className="small text-muted mb-1" style={{ fontSize: '0.75rem' }}>{stat.label}</div>
+                  <div className="fw-bold text-cyan-400 mb-1" style={{ fontSize: '0.95rem' }}>{stat.val}</div>
+                  <div className="small text-secondary" style={{ fontSize: '0.7rem' }}>{stat.desc}</div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
-
-      {/* Scroll Down Indicator */}
-      <a
-        href="#about"
-        className="position-absolute bottom-0 start-50 translate-middle-x mb-4 text-decoration-none text-muted d-none d-md-flex flex-column align-items-center gap-1 opacity-75 hover-opacity-100"
-        aria-label="Scroll to About section"
-      >
-        <span className="small font-code">SCROLL DOWN</span>
-        <ArrowDown size={18} className="animate-bounce" />
-      </a>
     </section>
   );
 }

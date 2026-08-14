@@ -366,3 +366,46 @@ code, pre, .font-code {
   display: inline-flex;
   align-items: center;
 }
+
+/* Modal Custom Overlay */
+.modal-backdrop-custom {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(9, 13, 22, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 1100;
+}
+
+/* Utility Helpers */
+.text-cyan-400 { color: #38bdf8 !important; }
+.text-emerald-400 { color: #34d399 !important; }
+.text-amber-400 { color: #fbbf24 !important; }
+.max-w-600 { max-width: 600px; }
+.max-w-700 { max-width: 700px; }
+.max-w-750 { max-width: 750px; }
+.max-w-900 { max-width: 900px; }
+.max-h-400 { max-height: 400px; }
+.max-h-90vh { max-height: 90vh; }
+
+.hover-glow:hover {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+}
+
+.border-gradient {
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+}
+
+@keyframes pulseAnimation {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.pulse-animation {
+  animation: pulseAnimation 2s infinite ease-in-out;
+}

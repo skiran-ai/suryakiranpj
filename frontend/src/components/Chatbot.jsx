@@ -1,27 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, User, Sparkles, Loader2, FileText } from 'lucide-react';
-import { chatbotKnowledgeBase } from '../data/portfolioData';
+import { MessageSquare, X, Send, Bot, User, Sparkles, Loader2, FileText, Briefcase, Code, Terminal } from 'lucide-react';
+import { apiClient } from '../services/apiClient';
 
-export default function Chatbot({ onOpenCV }) {
+export default function Chatbot({ onOpenCV, activeMode, setActiveMode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [currentMode, setCurrentMode] = useState(activeMode || 'STANDARD'); // STANDARD, RECRUITER, CLIENT, DEVELOPER
   const [messages, setMessages] = useState([
     {
       id: 1,
       sender: 'bot',
-      text: "Hello! 👋 I'm Suryakiran's AI Portfolio Assistant. Ask me anything about his skills, projects, background, contact info, or CV!"
+      text: "Hello! 👋 I'm KIRAN AI, Suryakiran's Portfolio Assistant. Select a mode or ask me anything about his skills, projects, or CV!"
     }
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
-  const suggestedQuestions = [
-    "Who is Suryakiran?",
-    "What is his tech stack?",
-    "Show Python & Django projects",
-    "How can I contact him?",
-    "How can I download his CV?"
-  ];
+  useEffect(() => {
+    if (activeMode) {
+      setCurrentMode(activeMode);
+      setIsOpen(true);
+      handleSend(`Summarize in ${activeMode} mode`, activeMode);
+    }
+  }, [activeMode]);
 
   useEffect(() => {
     if (isOpen) {
@@ -29,17 +30,16 @@ export default function Chatbot({ onOpenCV }) {
     }
   }, [messages, isOpen]);
 
-  const handleSend = async (queryText) => {
+  const handleSend = async (queryText, forceMode) => {
+    const modeToUse = forceMode || currentMode;
     const textToSend = queryText || input;
     if (!textToSend.trim()) return;
 
-    // Add user message
     const userMsg = { id: Date.now(), sender: 'user', text: textToSend };
     setMessages(prev => [...prev, userMsg]);
     if (!queryText) setInput('');
     setIsTyping(true);
 
-    // Special trigger for CV download prompt
     if (textToSend.toLowerCase().includes('cv') || textToSend.toLowerCase().includes('resume')) {
       setTimeout(() => {
         setIsTyping(false);
@@ -48,62 +48,56 @@ export default function Chatbot({ onOpenCV }) {
           {
             id: Date.now() + 1,
             sender: 'bot',
-            text: "You can view and download Suryakiran's ATS CV directly!",
+            text: "You can view and download Suryakiran's complete ATS CV directly!",
             hasCVAction: true
           }
         ]);
-      }, 600);
+      }, 500);
       return;
     }
 
     try {
-      // Query Django API
-      const res = await fetch('http://localhost:8000/api/chatbot/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: textToSend })
-      });
-      const data = await res.json();
-      
+      const res = await apiClient.queryAIChat(textToSend, modeToUse);
       setIsTyping(false);
-      if (res.ok && data.answer) {
-        setMessages(prev => [...prev, { id: Date.now() + 1, sender: 'bot', text: data.answer }]);
-      } else {
-        throw new Error();
-      }
+      setMessages(prev => [
+        ...prev,
+        { id: Date.now() + 1, sender: 'bot', text: res.answer, mode: res.mode }
+      ]);
     } catch {
-      // Client Knowledge Base Fallback
-      setTimeout(() => {
-        setIsTyping(false);
-        const lower = textToSend.toLowerCase();
-        let match = chatbotKnowledgeBase.find(item =>
-          item.keywords.some(kw => lower.includes(kw))
-        );
-
-        const answer = match
-          ? match.answer
-          : "Suryakiran P. J. is a Python Full Stack Developer proficient in Python, Django, React.js, JavaScript, and Bootstrap 5. Feel free to ask about his skills, projects, or contact details!";
-
-        setMessages(prev => [...prev, { id: Date.now() + 1, sender: 'bot', text: answer }]);
-      }, 500);
+      setIsTyping(false);
+      setMessages(prev => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          sender: 'bot',
+          text: "Suryakiran P. J. is a Python Full Stack Developer specializing in Python, Django, DRF, React.js, and modern full-stack web applications."
+        }
+      ]);
     }
   };
 
+  const modes = [
+    { key: 'STANDARD', label: 'General Q&A', icon: Bot },
+    { key: 'RECRUITER', label: 'Recruiter Mode', icon: Briefcase },
+    { key: 'CLIENT', label: 'Client Mode', icon: Sparkles },
+    { key: 'DEVELOPER', label: 'Developer Mode', icon: Code },
+  ];
+
   return (
-    <div className="chatbot-widget">
-      {/* Floating Action Trigger Button */}
+    <div className="chatbot-widget" style={{ zIndex: 1040 }}>
+      {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="chatbot-btn"
-        aria-label="Toggle portfolio assistant"
-        title="Chat with Suryakiran's AI Assistant"
+        className="chatbot-btn shadow-lg"
+        aria-label="Toggle Portfolio Assistant"
+        title="Chat with KIRAN AI Assistant"
       >
         {isOpen ? <X size={26} /> : <MessageSquare size={26} />}
       </button>
 
-      {/* Chat Window Drawer */}
+      {/* Drawer Window */}
       {isOpen && (
-        <div className="chatbot-window glass-panel d-flex flex-column shadow-lg">
+        <div className="chatbot-window glass-panel d-flex flex-column shadow-2xl border-gradient">
           {/* Header */}
           <div className="p-3 border-bottom border-secondary border-opacity-25 bg-secondary bg-opacity-25 d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center gap-2">
@@ -114,23 +108,47 @@ export default function Chatbot({ onOpenCV }) {
                 <Bot size={20} />
               </div>
               <div>
-                <h4 className="h6 mb-0 text-primary fw-bold">Suryakiran AI Assistant</h4>
+                <h4 className="h6 mb-0 text-primary fw-bold font-code">KIRAN AI Assistant</h4>
                 <span className="small text-emerald-400 d-flex align-items-center gap-1 font-code" style={{ fontSize: '0.7rem' }}>
                   <span className="rounded-circle d-inline-block bg-success" style={{ width: '6px', height: '6px' }}></span>
-                  Online
+                  Grounded Portfolio Intelligence
                 </span>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
               className="btn btn-sm text-secondary p-1 border-0"
-              aria-label="Close chat"
+              aria-label="Close"
             >
               <X size={20} />
             </button>
           </div>
 
-          {/* Messages Area */}
+          {/* Mode Switcher Tabs */}
+          <div className="px-3 py-2 bg-dark bg-opacity-40 border-bottom border-secondary border-opacity-10 d-flex gap-1 overflow-x-auto font-code">
+            {modes.map((m) => {
+              const IconComp = m.icon;
+              const isActive = currentMode === m.key;
+              return (
+                <button
+                  key={m.key}
+                  onClick={() => {
+                    setCurrentMode(m.key);
+                    handleSend(`Activate ${m.label}`, m.key);
+                  }}
+                  className={`btn btn-sm py-1 px-2.5 rounded-pill text-nowrap d-flex align-items-center gap-1.5 transition-all ${
+                    isActive ? 'btn-brand text-white' : 'btn-outline-brand text-secondary'
+                  }`}
+                  style={{ fontSize: '0.72rem' }}
+                >
+                  <IconComp size={12} />
+                  <span>{m.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Messages Feed */}
           <div className="flex-grow-1 p-3 overflow-y-auto d-flex flex-column gap-3">
             {messages.map((msg) => (
               <div
@@ -152,9 +170,10 @@ export default function Chatbot({ onOpenCV }) {
                       ? 'btn-brand text-white border-0'
                       : 'glass-panel text-primary'
                   }`}
-                  style={{ fontSize: '0.9rem', whiteSpace: 'pre-line' }}
+                  style={{ fontSize: '0.88rem', whiteSpace: 'pre-line', lineHeight: '1.5' }}
                 >
                   {msg.text}
+
                   {msg.hasCVAction && (
                     <div className="mt-2 pt-2 border-top border-secondary border-opacity-25">
                       <button
@@ -162,9 +181,9 @@ export default function Chatbot({ onOpenCV }) {
                           setIsOpen(false);
                           onOpenCV();
                         }}
-                        className="btn btn-outline-brand btn-sm w-100 d-flex align-items-center justify-content-center gap-1"
+                        className="btn btn-outline-brand btn-sm w-100 d-flex align-items-center justify-content-center gap-1 font-code"
                       >
-                        <FileText size={16} />
+                        <FileText size={15} />
                         <span>Open & Download CV</span>
                       </button>
                     </div>
@@ -183,30 +202,36 @@ export default function Chatbot({ onOpenCV }) {
             ))}
 
             {isTyping && (
-              <div className="d-flex gap-2 align-items-center text-muted small">
+              <div className="d-flex gap-2 align-items-center text-muted small font-code">
                 <Bot size={16} className="text-cyan-400" />
                 <Loader2 size={16} className="animate-spin" />
-                <span>Assistant is typing...</span>
+                <span>KIRAN AI is analyzing knowledge base...</span>
               </div>
             )}
             <div ref={chatEndRef} />
           </div>
 
-          {/* Quick Suggested Chips */}
-          <div className="px-3 py-2 border-top border-secondary border-opacity-10 d-flex gap-1 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
-            {suggestedQuestions.map((q, idx) => (
+          {/* Quick Question Chips */}
+          <div className="px-3 py-1.5 border-top border-secondary border-opacity-10 d-flex gap-1 overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
+            {[
+              "Who is Suryakiran?",
+              "What is his tech stack?",
+              "Show Full Stack Projects",
+              "How to contact him?",
+              "Download CV"
+            ].map((q, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSend(q)}
-                className="btn btn-outline-brand btn-sm py-1 px-2 text-nowrap rounded-pill"
-                style={{ fontSize: '0.75rem' }}
+                className="btn btn-outline-brand btn-sm py-0.5 px-2 text-nowrap rounded-pill font-code"
+                style={{ fontSize: '0.72rem' }}
               >
                 {q}
               </button>
             ))}
           </div>
 
-          {/* Input Footer */}
+          {/* Form Input */}
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -218,8 +243,8 @@ export default function Chatbot({ onOpenCV }) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask a question..."
-              className="form-control glass-panel border-0 text-primary small py-2 px-3"
+              placeholder={`Ask KIRAN AI (${currentMode} mode)...`}
+              className="form-control glass-panel border-0 text-primary small py-2 px-3 focus-none shadow-none"
             />
             <button
               type="submit"

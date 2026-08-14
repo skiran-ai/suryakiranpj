@@ -1,185 +1,166 @@
-import React, { useEffect } from 'react';
-import { X, Download, Printer, Mail, Github, Linkedin, GraduationCap, Code, Database, Globe } from 'lucide-react';
-import { personalInfo } from '../data/portfolioData';
+import React, { useState, useEffect } from 'react';
+import { X, Download, FileText, CheckCircle2, GraduationCap, Briefcase, Code, Mail, MapPin, ExternalLink } from 'lucide-react';
+import { apiClient } from '../services/apiClient';
 
 export default function CVViewer({ isOpen, onClose }) {
+  const [cvData, setCvData] = useState(null);
+
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
     if (isOpen) {
-      window.addEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'hidden';
+      apiClient.getCVMetadata().then(res => setCvData(res));
     }
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'auto';
-    };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleDownloadPDF = () => {
-    // Triggers download of the public PDF asset
-    const link = document.createElement('a');
-    link.href = '/assets/Suryakiran-PJ-CV.pdf';
-    link.download = 'Suryakiran-PJ-CV.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const data = cvData || {
+    name: "Suryakiran P. J.",
+    role: "Python Full Stack Developer",
+    email: "suryakiranpjineesh@gmail.com",
+    location: "Kerala, India",
+    github: "https://github.com/skiran-ai",
+    linkedin: "https://www.linkedin.com/in/surya-kiran-967659351",
+    pdf_url: "/assets/Suryakiran-PJ-CV.pdf"
   };
 
   return (
     <div
-      className="modal fade show d-block"
-      tabIndex="-1"
-      style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(10px)', zIndex: 1070 }}
+      className="modal-backdrop-custom d-flex align-items-center justify-content-center p-3"
+      onClick={onClose}
+      style={{ zIndex: 1150 }}
     >
-      <div className="modal-dialog modal-dialog-centered modal-xl">
-        <div className="modal-content modal-glass border-0 shadow-lg overflow-hidden">
-          {/* Header Controls */}
-          <div className="modal-header border-bottom border-secondary border-opacity-25 px-4 py-3 align-items-center justify-content-between">
-            <div className="d-flex align-items-center gap-2">
-              <span className="badge badge-brand me-2">Curriculum Vitae</span>
-              <h3 className="modal-title h5 text-primary fw-bold mb-0">{personalInfo.name} — ATS Resume</h3>
-            </div>
-            <div className="d-flex align-items-center gap-2">
-              <button
-                onClick={handlePrint}
-                className="btn btn-outline-brand btn-sm d-none d-sm-inline-flex align-items-center gap-1"
-                title="Print CV"
-              >
-                <Printer size={16} />
-                <span>Print</span>
-              </button>
-              <button
-                onClick={handleDownloadPDF}
-                className="btn btn-brand btn-sm d-flex align-items-center gap-1"
-              >
-                <Download size={16} />
-                <span>Download CV (PDF)</span>
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-brand rounded-circle p-1 d-flex align-items-center justify-content-center"
-                style={{ width: '36px', height: '36px' }}
-                onClick={onClose}
-                aria-label="Close CV viewer"
-              >
-                <X size={20} />
-              </button>
+      <div
+        className="glass-card p-4 p-md-5 max-w-900 w-100 overflow-y-auto max-h-90vh shadow-2xl border-gradient"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="d-flex align-items-center justify-content-between border-bottom border-secondary border-opacity-25 pb-3 mb-4">
+          <div className="d-flex align-items-center gap-2">
+            <FileText size={24} className="text-cyan-400" />
+            <div>
+              <h3 className="h4 text-primary fw-bold mb-0">ATS Curriculum Vitae</h3>
+              <span className="small text-muted font-code">Verified Metadata Endpoint</span>
             </div>
           </div>
 
-          {/* Printable ATS Document Body */}
-          <div className="modal-body p-4 p-md-5 overflow-y-auto" style={{ maxHeight: '80vh' }}>
-            <div className="glass-panel p-4 p-md-5 bg-white text-dark rounded-3 shadow-sm printable-cv-document">
-              {/* Header */}
-              <div className="border-bottom pb-4 mb-4 text-center text-md-start d-md-flex justify-content-between align-items-end">
-                <div>
-                  <h1 className="h2 text-dark fw-bold mb-1">{personalInfo.name}</h1>
-                  <h2 className="h5 text-primary fw-semibold mb-2">{personalInfo.role}</h2>
-                  <p className="small text-muted mb-0 max-w-xl">{personalInfo.tagline}</p>
-                </div>
-                <div className="mt-3 mt-md-0 small text-md-end text-muted d-flex flex-column gap-1">
-                  <div><strong>Email:</strong> {personalInfo.email}</div>
-                  <div><strong>GitHub:</strong> github.com/skiran-ai</div>
-                  <div><strong>LinkedIn:</strong> linkedin.com/in/surya-kiran-967659351</div>
-                  <div><strong>Location:</strong> Kerala, India</div>
-                </div>
-              </div>
-
-              {/* Professional Summary */}
-              <div className="mb-4">
-                <h3 className="h6 text-dark text-uppercase fw-bold border-bottom pb-1 mb-2">Professional Summary</h3>
-                <p className="small text-secondary mb-0 line-height-relaxed">{personalInfo.summary}</p>
-              </div>
-
-              {/* Education */}
-              <div className="mb-4">
-                <h3 className="h6 text-dark text-uppercase fw-bold border-bottom pb-1 mb-2">Education</h3>
-                <div className="d-flex justify-content-between align-items-start">
-                  <div>
-                    <strong className="text-dark">{personalInfo.education.degree}</strong>
-                    <div className="small text-muted">{personalInfo.education.institution}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Technical Skills Matrix */}
-              <div className="mb-4">
-                <h3 className="h6 text-dark text-uppercase fw-bold border-bottom pb-1 mb-2">Technical Skills</h3>
-                <div className="row g-3 small">
-                  <div className="col-md-6">
-                    <strong className="text-dark d-block mb-1">Frontend Development:</strong>
-                    <span className="text-secondary">HTML5, CSS3, Bootstrap 5, JavaScript (ES6+), React.js, Responsive Web Design</span>
-                  </div>
-                  <div className="col-md-6">
-                    <strong className="text-dark d-block mb-1">Backend Development:</strong>
-                    <span className="text-secondary">Python, Django, Django REST Framework, RESTful API Architecture, Relational Databases</span>
-                  </div>
-                  <div className="col-md-6">
-                    <strong className="text-dark d-block mb-1">Developer Tools & Version Control:</strong>
-                    <span className="text-secondary">Git, GitHub, VS Code, Postman API Testing</span>
-                  </div>
-                  <div className="col-md-6">
-                    <strong className="text-dark d-block mb-1">Core Competencies:</strong>
-                    <span className="text-secondary">Full Stack Architecture, Component Design, State Management, Problem Solving</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Projects Showcase */}
-              <div className="mb-4">
-                <h3 className="h6 text-dark text-uppercase fw-bold border-bottom pb-1 mb-2">Key Projects & Applications</h3>
-                
-                <div className="mb-3">
-                  <div className="d-flex justify-content-between">
-                    <strong className="text-dark">DevNexus — Full Stack Developer Hub</strong>
-                    <span className="small text-muted font-code">React | Django | REST API</span>
-                  </div>
-                  <p className="small text-secondary mb-1">
-                    Engineered full stack collaboration platform featuring Django backend authentication, JWT tokens, REST API endpoints, and a React frontend dashboard.
-                  </p>
-                </div>
-
-                <div className="mb-3">
-                  <div className="d-flex justify-content-between">
-                    <strong className="text-dark">SwiftCart — Modern E-Commerce Platform</strong>
-                    <span className="small text-muted font-code">Python | Django | React.js</span>
-                  </div>
-                  <p className="small text-secondary mb-1">
-                    Developed e-commerce engine leveraging Django ORM for product management and order processing with dynamic React shopping cart UI.
-                  </p>
-                </div>
-
-                <div>
-                  <div className="d-flex justify-content-between">
-                    <strong className="text-dark">PyEngine — Django RESTful API Service</strong>
-                    <span className="small text-muted font-code">Python | Django REST Framework</span>
-                  </div>
-                  <p className="small text-secondary mb-1">
-                    Architected modular backend API endpoints using custom serializers, input validation guards, error handling, and Postman API test collections.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Modal Footer */}
-          <div className="modal-footer border-top border-secondary border-opacity-25 px-4 py-3 justify-content-between">
-            <button onClick={handleDownloadPDF} className="btn btn-brand">
-              <Download size={18} />
-              <span>Download PDF File</span>
-            </button>
-            <button onClick={onClose} className="btn btn-outline-brand">
-              Close / Back
+          <div className="d-flex align-items-center gap-2">
+            <a
+              href={data.pdf_url}
+              download="Suryakiran-PJ-CV.pdf"
+              className="btn btn-brand btn-sm d-flex align-items-center gap-1.5 font-code"
+            >
+              <Download size={16} />
+              <span>Download PDF</span>
+            </a>
+            <button onClick={onClose} className="btn btn-outline-brand p-2 rounded-circle" aria-label="Close">
+              <X size={20} />
             </button>
           </div>
+        </div>
+
+        {/* CV Document Content */}
+        <div className="glass-panel p-4 rounded-3 text-primary font-sans">
+          {/* Top Header Block */}
+          <div className="text-center border-bottom border-secondary border-opacity-25 pb-4 mb-4">
+            <h1 className="h2 fw-bold text-primary mb-1">{data.name}</h1>
+            <p className="lead text-cyan-400 font-code fw-semibold mb-3">{data.role}</p>
+
+            <div className="d-flex flex-wrap align-items-center justify-content-center gap-3 small text-secondary font-code">
+              <span className="d-flex align-items-center gap-1"><Mail size={14} /> {data.email}</span>
+              <span>•</span>
+              <span className="d-flex align-items-center gap-1"><MapPin size={14} /> {data.location}</span>
+              <span>•</span>
+              <a href={data.github} target="_blank" rel="noopener noreferrer" className="text-cyan-400 text-decoration-none d-flex align-items-center gap-1">
+                GitHub <ExternalLink size={12} />
+              </a>
+              <span>•</span>
+              <a href={data.linkedin} target="_blank" rel="noopener noreferrer" className="text-cyan-400 text-decoration-none d-flex align-items-center gap-1">
+                LinkedIn <ExternalLink size={12} />
+              </a>
+            </div>
+          </div>
+
+          {/* Professional Summary */}
+          <div className="mb-4">
+            <h4 className="h6 text-cyan-400 font-code text-uppercase fw-bold mb-2">Professional Profile</h4>
+            <p className="small text-secondary mb-0" style={{ lineHeight: '1.6' }}>
+              Enthusiastic and results-driven Python Full Stack Developer with a solid foundation in computer science and full-stack web architecture. Specialized in designing scalable RESTful backend APIs using Python & Django REST Framework, paired with responsive, component-driven user interfaces in React.js, JavaScript, and Bootstrap 5.
+            </p>
+          </div>
+
+          {/* Core Technical Stack */}
+          <div className="mb-4">
+            <h4 className="h6 text-cyan-400 font-code text-uppercase fw-bold mb-2">Core Skill Matrix</h4>
+            <div className="row gy-2 small text-secondary">
+              <div className="col-md-6">
+                <strong>Frontend:</strong> React.js, JavaScript (ES6+), HTML5, CSS3, Bootstrap 5, Glassmorphism
+              </div>
+              <div className="col-md-6">
+                <strong>Backend:</strong> Python, Django, Django REST Framework, REST API Design, JSON
+              </div>
+              <div className="col-md-6">
+                <strong>Database & Security:</strong> Relational Modeling (PostgreSQL / SQLite), Rate Throttling, CORS, Auth
+              </div>
+              <div className="col-md-6">
+                <strong>Tools & Workflow:</strong> Git, GitHub, VS Code, Postman API Testing & Specs
+              </div>
+            </div>
+          </div>
+
+          {/* Key Engineering Projects */}
+          <div className="mb-4">
+            <h4 className="h6 text-cyan-400 font-code text-uppercase fw-bold mb-2">Featured Projects</h4>
+            <div className="d-flex flex-column gap-3">
+              <div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong className="text-primary">DevNexus — Full Stack Project Manager</strong>
+                  <span className="badge bg-secondary bg-opacity-25 font-code small">Django + React</span>
+                </div>
+                <p className="small text-secondary mb-0">Full-stack project collaboration platform featuring DRF token authentication, custom serializers, and React Kanban state tracking board.</p>
+              </div>
+
+              <div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong className="text-primary">SwiftCart — Modern E-Commerce Engine</strong>
+                  <span className="badge bg-secondary bg-opacity-25 font-code small">Django + React</span>
+                </div>
+                <p className="small text-secondary mb-0">High-performance digital storefront with real-time shopping cart state, category filters, and administrative product catalog management.</p>
+              </div>
+
+              <div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong className="text-primary">PyEngine — Django REST API Service</strong>
+                  <span className="badge bg-secondary bg-opacity-25 font-code small">Python / DRF</span>
+                </div>
+                <p className="small text-secondary mb-0">Modular backend API architecture featuring custom serializers, error handlers, endpoint throttling, and Postman API specs.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Education */}
+          <div>
+            <h4 className="h6 text-cyan-400 font-code text-uppercase fw-bold mb-2">Education</h4>
+            <div className="d-flex justify-content-between align-items-start">
+              <div>
+                <strong className="text-primary">Bachelor of Science (B.Sc.) in Computer Science</strong>
+                <div className="small text-secondary">MG University, Kerala, India</div>
+              </div>
+              <span className="badge bg-secondary bg-opacity-25 font-code small">2020 – 2023</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer Actions */}
+        <div className="pt-3 border-top border-secondary border-opacity-25 d-flex justify-content-between align-items-center">
+          <span className="small text-muted font-code">Formatted for ATS Resume Scanners</span>
+          <a
+            href={data.pdf_url}
+            download="Suryakiran-PJ-CV.pdf"
+            className="btn btn-brand btn-sm d-flex align-items-center gap-1 font-code"
+          >
+            <Download size={16} />
+            <span>Download Official PDF</span>
+          </a>
         </div>
       </div>
     </div>

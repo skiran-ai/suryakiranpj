@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Send, CheckCircle2, AlertCircle, Mail, MapPin, Sparkles, Loader2 } from 'lucide-react';
-import { personalInfo } from '../data/portfolioData';
+import { apiClient } from '../services/apiClient';
 import SocialLinks from './SocialLinks';
 
 export default function ContactForm() {
@@ -14,7 +14,8 @@ export default function ContactForm() {
   const [status, setStatus] = useState({
     submitting: false,
     success: false,
-    error: null
+    error: null,
+    message: null
   });
 
   const handleChange = (e) => {
@@ -26,46 +27,31 @@ export default function ContactForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Basic Client-side Validation
+
     if (!formData.name || !formData.email || !formData.message) {
-      setStatus({ submitting: false, success: false, error: 'Please fill in all required fields (Name, Email, Message).' });
+      setStatus({ submitting: false, success: false, error: 'Please fill in all required fields (Name, Email, Message).', message: null });
       return;
     }
 
-    setStatus({ submitting: true, success: false, error: null });
+    setStatus({ submitting: true, success: false, error: null, message: null });
 
-    try {
-      // API call to Django backend endpoint
-      const response = await fetch('http://localhost:8000/api/contact/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+    const res = await apiClient.submitContact(formData);
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        setStatus({
-          submitting: false,
-          success: true,
-          error: null
-        });
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        throw new Error(data.message || 'Failed to submit contact message. Please try again.');
-      }
-    } catch (err) {
-      // Fallback handling if backend API is not running live in standalone mode
-      console.log("Django contact endpoint notification:", err.message);
+    if (res.success) {
       setStatus({
         submitting: false,
-        success: true, // Graceful user confirmation
-        error: null
+        success: true,
+        error: null,
+        message: res.message || "Thank you! Your message has been sent successfully."
       });
       setFormData({ name: '', email: '', subject: '', message: '' });
+    } else {
+      setStatus({
+        submitting: false,
+        success: false,
+        error: res.message || 'Failed to submit contact message. Please try again.',
+        message: null
+      });
     }
   };
 
@@ -82,18 +68,18 @@ export default function ContactForm() {
             Let's Build Something <span className="text-gradient">Together</span>
           </h2>
           <p className="section-subtitle">
-            Have a project in mind, a career opportunity, or a technical inquiry? Send Suryakiran a direct message below!
+            Have a project opportunity, career inquiry, or full-stack software project? Send Suryakiran a direct message below.
           </p>
         </div>
 
         <div className="row gy-4 align-items-stretch">
-          {/* Contact Details & Socials Left Column */}
+          {/* Contact Details Left Column */}
           <div className="col-lg-5">
             <div className="glass-card p-4 p-md-5 h-100 d-flex flex-column justify-content-between">
               <div>
                 <h3 className="h4 text-primary fw-bold mb-3">Direct Contact Channels</h3>
                 <p className="text-secondary mb-4">
-                  Feel free to reach out via email, check out my code repositories on GitHub, or connect on LinkedIn and Instagram.
+                  Feel free to reach out via email, inspect code repositories on GitHub, or connect on LinkedIn and Instagram.
                 </p>
 
                 {/* Email Box */}
@@ -107,10 +93,10 @@ export default function ContactForm() {
                   <div>
                     <span className="small text-muted d-block font-code">EMAIL ADDRESS</span>
                     <a
-                      href={`mailto:${personalInfo.email}`}
+                      href="mailto:suryakiranpjineesh@gmail.com"
                       className="text-primary fw-semibold text-decoration-none"
                     >
-                      {personalInfo.email}
+                      suryakiranpjineesh@gmail.com
                     </a>
                   </div>
                 </div>
@@ -131,26 +117,24 @@ export default function ContactForm() {
               </div>
 
               <div>
-                <h4 className="h6 text-primary fw-bold mb-3">Follow & Connect:</h4>
+                <h4 className="h6 text-primary fw-bold mb-3 font-code">Connect & Follow:</h4>
                 <SocialLinks iconSize={20} />
               </div>
             </div>
           </div>
 
-          {/* Interactive Form Right Column */}
+          {/* Contact Form Right Column */}
           <div className="col-lg-7">
             <div className="glass-card p-4 p-md-5">
               {status.success && (
-                <div className="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert">
+                <div className="alert alert-success d-flex align-items-center gap-2 mb-4 font-code" role="alert">
                   <CheckCircle2 size={20} />
-                  <div>
-                    <strong>Message sent successfully!</strong> Thank you for contacting Suryakiran.
-                  </div>
+                  <div>{status.message}</div>
                 </div>
               )}
 
               {status.error && (
-                <div className="alert alert-danger d-flex align-items-center gap-2 mb-4" role="alert">
+                <div className="alert alert-danger d-flex align-items-center gap-2 mb-4 font-code" role="alert">
                   <AlertCircle size={20} />
                   <div>{status.error}</div>
                 </div>
@@ -159,7 +143,7 @@ export default function ContactForm() {
               <form onSubmit={handleSubmit}>
                 <div className="row gy-3">
                   <div className="col-md-6">
-                    <label htmlFor="name" className="form-label text-secondary small fw-semibold">
+                    <label htmlFor="name" className="form-label text-secondary small fw-semibold font-code">
                       Your Name <span className="text-danger">*</span>
                     </label>
                     <input
@@ -175,7 +159,7 @@ export default function ContactForm() {
                   </div>
 
                   <div className="col-md-6">
-                    <label htmlFor="email" className="form-label text-secondary small fw-semibold">
+                    <label htmlFor="email" className="form-label text-secondary small fw-semibold font-code">
                       Your Email <span className="text-danger">*</span>
                     </label>
                     <input
@@ -191,7 +175,7 @@ export default function ContactForm() {
                   </div>
 
                   <div className="col-12">
-                    <label htmlFor="subject" className="form-label text-secondary small fw-semibold">
+                    <label htmlFor="subject" className="form-label text-secondary small fw-semibold font-code">
                       Subject
                     </label>
                     <input
@@ -200,13 +184,13 @@ export default function ContactForm() {
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder="e.g. Full Stack Development Inquiry"
+                      placeholder="e.g. Full Stack Project Inquiry"
                       className="form-control glass-panel text-primary border-0 p-3"
                     />
                   </div>
 
                   <div className="col-12">
-                    <label htmlFor="message" className="form-label text-secondary small fw-semibold">
+                    <label htmlFor="message" className="form-label text-secondary small fw-semibold font-code">
                       Message <span className="text-danger">*</span>
                     </label>
                     <textarea
@@ -225,16 +209,16 @@ export default function ContactForm() {
                     <button
                       type="submit"
                       disabled={status.submitting}
-                      className="btn btn-brand w-100 py-3 justify-content-center"
+                      className="btn btn-brand w-100 py-3 justify-content-center font-code"
                     >
                       {status.submitting ? (
                         <>
-                          <Loader2 size={18} className="animate-spin" />
+                          <Loader2 size={18} className="animate-spin me-2" />
                           <span>Sending Message...</span>
                         </>
                       ) : (
                         <>
-                          <Send size={18} />
+                          <Send size={18} className="me-2" />
                           <span>Send Message</span>
                         </>
                       )}

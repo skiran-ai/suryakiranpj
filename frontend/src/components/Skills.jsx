@@ -1,33 +1,49 @@
-import React from 'react';
-import { skillsData } from '../data/portfolioData';
-import { Cpu, Terminal, Database, Shield, Globe, Layers, Smartphone, Sparkles, Code } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Cpu, Terminal, Database, Shield, Smartphone, Globe, Sparkles, Layers, Code, Layout } from 'lucide-react';
+import { apiClient } from '../services/apiClient';
+
+const iconMap = {
+  Code, Layers, Layout, Terminal, Cpu, Database, Globe, Shield, Smartphone, Sparkles
+};
 
 export default function Skills() {
-  const iconMap = {
-    Code: Code,
-    Layers: Layers,
-    Layout: Layers,
-    Terminal: Terminal,
-    Cpu: Cpu,
-    Database: Database,
-    Globe: Globe,
-    Shield: Shield,
-    Github: Shield,
-    Smartphone: Smartphone,
-    Sparkles: Sparkles
-  };
+  const [skillsData, setSkillsData] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('all');
+
+  useEffect(() => {
+    apiClient.getSkills().then(res => {
+      setSkillsData(res);
+    });
+  }, []);
+
+  if (!skillsData) {
+    return (
+      <section id="skills" className="section-padding position-relative">
+        <div className="container text-center py-5">
+          <div className="spinner-border text-cyan-400" role="status">
+            <span className="visually-hidden">Loading skills matrix...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   const categories = [
-    { title: "Frontend Engineering", key: "frontend", icon: Cpu, accent: "var(--accent-cyan)" },
-    { title: "Backend Architecture", key: "backend", icon: Database, accent: "var(--accent-purple)" },
-    { title: "Tools & Workflow", key: "tools", icon: Shield, accent: "var(--accent-emerald)" },
-    { title: "Development Concepts", key: "development", icon: Sparkles, accent: "var(--accent-blue)" }
+    { key: 'all', label: 'All Stack' },
+    { key: 'frontend', label: 'Frontend' },
+    { key: 'backend', label: 'Backend' },
+    { key: 'tools', label: 'Tools & DevOps' },
+    { key: 'development', label: 'Core Capabilities' },
   ];
+
+  const displayedSkills = activeCategory === 'all'
+    ? skillsData.all
+    : (skillsData.grouped[activeCategory] || []);
 
   return (
     <section id="skills" className="section-padding position-relative">
       <div className="container">
-        {/* Section Title */}
+        {/* Section Heading */}
         <div className="text-center mb-5">
           <div className="badge-brand mb-2">
             <Cpu size={16} />
@@ -37,54 +53,64 @@ export default function Skills() {
             Skills & <span className="text-gradient">Tech Stack</span>
           </h2>
           <p className="section-subtitle">
-            A comprehensive overview of technologies, frameworks, and core competencies Suryakiran uses to engineer robust software solutions.
+            Comprehensive breakdown of Suryakiran's technical proficiency across frontend engineering, backend Python/Django systems, and developer tools.
           </p>
+
+          {/* Filter Chips */}
+          <div className="d-flex flex-wrap align-items-center justify-content-center gap-2 mb-4 font-code">
+            {categories.map((cat) => (
+              <button
+                key={cat.key}
+                onClick={() => setActiveCategory(cat.key)}
+                className={`btn ${
+                  activeCategory === cat.key ? 'btn-brand' : 'btn-outline-brand'
+                } px-3 py-1.5 rounded-pill font-semibold small transition-all`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Skill Categories Grid */}
+        {/* Skills Cards Grid */}
         <div className="row gy-4">
-          {categories.map((category) => {
-            const CategoryIcon = category.icon;
-            const skillsList = skillsData[category.key] || [];
-
+          {displayedSkills.map((skill, idx) => {
+            const IconComponent = iconMap[skill.icon_name] || Code;
             return (
-              <div key={category.key} className="col-md-6 col-lg-3">
-                <div className="glass-card p-4 h-100 d-flex flex-column justify-content-between">
+              <div key={idx} className="col-sm-6 col-lg-3">
+                <div className="glass-card p-4 h-100 d-flex flex-column justify-content-between transition-all hover-glow">
                   <div>
-                    {/* Category Header */}
-                    <div className="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                    <div className="d-flex align-items-center justify-content-between mb-3">
                       <div
                         className="rounded-circle p-2.5 d-flex align-items-center justify-content-center"
-                        style={{
-                          background: 'var(--gradient-glow)',
-                          color: category.accent
-                        }}
+                        style={{ background: 'var(--gradient-glow)', color: 'var(--accent-cyan)' }}
                       >
-                        <CategoryIcon size={24} />
+                        <IconComponent size={22} />
                       </div>
-                      <h3 className="h6 mb-0 text-primary fw-bold">{category.title}</h3>
+                      <span className="badge bg-secondary bg-opacity-25 text-secondary font-code small" style={{ fontSize: '0.7rem' }}>
+                        {skill.category_display || skill.category}
+                      </span>
                     </div>
 
-                    {/* Skill Badges List */}
-                    <div className="d-flex flex-column gap-3">
-                      {skillsList.map((skill, idx) => {
-                        const IconComponent = iconMap[skill.icon] || Code;
-                        return (
-                          <div
-                            key={idx}
-                            className="glass-panel p-2.5 px-3 d-flex align-items-center justify-content-between transition-all"
-                            style={{ borderRadius: 'var(--radius-sm)' }}
-                          >
-                            <div className="d-flex align-items-center gap-2">
-                              <IconComponent size={18} style={{ color: category.accent }} />
-                              <span className="fw-semibold text-primary small">{skill.name}</span>
-                            </div>
-                            <span className="badge bg-secondary bg-opacity-25 text-secondary small font-code" style={{ fontSize: '0.7rem' }}>
-                              {skill.badge}
-                            </span>
-                          </div>
-                        );
-                      })}
+                    <h3 className="h5 text-primary fw-bold mb-1">{skill.name}</h3>
+                    <p className="small text-secondary mb-3">{skill.badge}</p>
+                  </div>
+
+                  {/* Proficiency Meter */}
+                  <div>
+                    <div className="d-flex justify-content-between text-muted font-code small mb-1" style={{ fontSize: '0.72rem' }}>
+                      <span>Proficiency</span>
+                      <span>{skill.proficiency || 90}%</span>
+                    </div>
+                    <div className="progress glass-panel" style={{ height: '6px' }}>
+                      <div
+                        className="progress-bar"
+                        style={{
+                          width: `${skill.proficiency || 90}%`,
+                          background: 'var(--gradient-brand)',
+                          borderRadius: '10px'
+                        }}
+                      ></div>
                     </div>
                   </div>
                 </div>

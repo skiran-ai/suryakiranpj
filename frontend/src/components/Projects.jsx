@@ -1,17 +1,31 @@
-import React, { useState } from 'react';
-import { projectsData } from '../data/portfolioData';
-import { Code, Github, ExternalLink, Info, Filter } from 'lucide-react';
-import ProjectModal from './ProjectModal';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { Code, Github, ExternalLink, Info, Filter, Search, Cpu } from 'lucide-react';
+import { apiClient } from '../services/apiClient';
+
+const ProjectModal = lazy(() => import('./ProjectModal'));
+const ProjectXRayModal = lazy(() => import('./ProjectXRayModal'));
 
 export default function Projects() {
+  const [projects, setProjects] = useState([]);
   const [activeTab, setActiveTab] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [xrayProject, setXrayProject] = useState(null);
 
-  const categories = ['All', 'Frontend', 'Backend', 'Full Stack'];
+  const categories = ['All', 'Full Stack', 'Backend', 'Frontend', 'AI/ML'];
 
-  const filteredProjects = activeTab === 'All'
-    ? projectsData
-    : projectsData.filter(p => p.category.toLowerCase() === activeTab.toLowerCase());
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    apiClient.getProjects(activeTab, searchQuery).then((data) => {
+      if (isMounted) {
+        setProjects(data);
+        setLoading(false);
+      }
+    });
+    return () => { isMounted = false; };
+  }, [activeTab, searchQuery]);
 
   return (
     <section id="projects" className="section-padding position-relative">
@@ -26,122 +40,191 @@ export default function Projects() {
             Projects <span className="text-gradient">Showcase</span>
           </h2>
           <p className="section-subtitle">
-            Explore Suryakiran's full stack applications, backend REST APIs, and frontend interfaces. Filter by technology category below.
+            Explore Suryakiran's full-stack web platforms, REST API services, and frontend applications. Powered dynamically by Django REST API.
           </p>
 
-          {/* Filter Category Tabs */}
-          <div className="d-flex flex-wrap align-items-center justify-content-center gap-2 mb-4">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveTab(cat)}
-                className={`btn ${
-                  activeTab === cat ? 'btn-brand' : 'btn-outline-brand'
-                } px-4 py-2 rounded-pill font-semibold transition-all`}
-              >
-                {cat === 'All' && <Filter size={16} className="me-1" />}
-                {cat} Projects
-              </button>
-            ))}
+          {/* Controls: Search Bar + Filter Tabs */}
+          <div className="max-w-700 mx-auto mb-4">
+            <div className="glass-panel p-2 rounded-pill d-flex align-items-center mb-3 shadow-sm">
+              <Search size={18} className="text-secondary ms-3 me-2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search projects by title, stack, or problem statement..."
+                className="form-control glass-panel border-0 text-primary small py-1.5 focus-none shadow-none"
+              />
+            </div>
+
+            <div className="d-flex flex-wrap align-items-center justify-content-center gap-2">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveTab(cat)}
+                  className={`btn ${
+                    activeTab === cat ? 'btn-brand' : 'btn-outline-brand'
+                  } px-3 py-1.5 rounded-pill font-semibold small transition-all`}
+                >
+                  {cat === 'All' && <Filter size={14} className="me-1" />}
+                  {cat}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Projects Grid */}
-        <div className="row gy-4">
-          {filteredProjects.map((project) => (
-            <div key={project.id} className="col-md-6 col-lg-4">
-              <div className="glass-card h-100 d-flex flex-column overflow-hidden">
-                {/* Thumbnail Header */}
-                <div className="position-relative overflow-hidden" style={{ height: '200px' }}>
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-100 h-100 object-fit-cover transition-transform"
-                    style={{ transition: 'transform 0.4s ease' }}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80";
-                    }}
-                  />
-                  <span
-                    className="position-absolute top-0 end-0 m-3 badge badge-brand shadow-sm"
-                    style={{ backdropFilter: 'blur(8px)' }}
-                  >
-                    {project.category}
-                  </span>
+        {loading ? (
+          <div className="row gy-4">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="col-md-6 col-lg-4">
+                <div className="glass-card p-4 h-100 placeholder-glow">
+                  <div className="placeholder bg-secondary bg-opacity-25 rounded w-100 mb-3" style={{ height: '180px' }}></div>
+                  <div className="placeholder bg-secondary bg-opacity-25 rounded w-75 mb-2" style={{ height: '24px' }}></div>
+                  <div className="placeholder bg-secondary bg-opacity-25 rounded w-100 mb-3" style={{ height: '16px' }}></div>
                 </div>
-
-                {/* Body Content */}
-                <div className="p-4 d-flex flex-column flex-grow-1 justify-content-between">
-                  <div>
-                    <h3 className="h5 text-primary fw-bold mb-2">{project.title}</h3>
-                    <p className="small text-secondary mb-3">{project.shortDesc}</p>
-
-                    {/* Tech Badges */}
-                    <div className="d-flex flex-wrap gap-1.5 mb-4">
-                      {project.technologies.slice(0, 4).map((tech, idx) => (
-                        <span
-                          key={idx}
-                          className="badge bg-secondary bg-opacity-25 text-secondary font-code small"
-                          style={{ fontSize: '0.75rem' }}
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                      {project.technologies.length > 4 && (
-                        <span className="badge bg-secondary bg-opacity-25 text-secondary font-code small" style={{ fontSize: '0.75rem' }}>
-                          +{project.technologies.length - 4}
-                        </span>
-                      )}
-                    </div>
+              </div>
+            ))}
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="text-center py-5 glass-card p-4">
+            <p className="text-secondary mb-0">No projects found matching category "{activeTab}" and query "{searchQuery}".</p>
+          </div>
+        ) : (
+          <div className="row gy-4">
+            {projects.map((project) => (
+              <div key={project.id || project.slug} className="col-md-6 col-lg-4">
+                <div className="glass-card h-100 d-flex flex-column overflow-hidden transition-all hover-glow">
+                  {/* Thumbnail Header */}
+                  <div className="position-relative overflow-hidden" style={{ height: '200px' }}>
+                    <img
+                      src={project.image_url || project.image}
+                      alt={project.title}
+                      className="w-100 h-100 object-fit-cover transition-transform"
+                      style={{ transition: 'transform 0.4s ease' }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80";
+                      }}
+                    />
+                    <span
+                      className="position-absolute top-0 end-0 m-3 badge badge-brand shadow-sm font-code"
+                      style={{ backdropFilter: 'blur(8px)' }}
+                    >
+                      {project.category}
+                    </span>
                   </div>
 
-                  {/* Actions Footer */}
-                  <div className="d-flex align-items-center justify-content-between pt-3 border-top border-secondary border-opacity-25">
-                    <button
-                      onClick={() => setSelectedProject(project)}
-                      className="btn btn-outline-brand btn-sm d-flex align-items-center gap-1"
-                    >
-                      <Info size={16} />
-                      <span>View Details</span>
-                    </button>
+                  {/* Body Content */}
+                  <div className="p-4 d-flex flex-column flex-grow-1 justify-content-between">
+                    <div>
+                      <h3 className="h5 text-primary fw-bold mb-2">{project.title}</h3>
+                      <p className="small text-secondary mb-3">
+                        {project.short_description || project.shortDesc}
+                      </p>
 
-                    <div className="d-flex gap-2">
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-outline-brand btn-sm p-2 rounded-circle"
-                        aria-label="GitHub Repository"
-                        title="GitHub Repo"
-                      >
-                        <Github size={16} />
-                      </a>
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-outline-brand btn-sm p-2 rounded-circle"
-                        aria-label="Live Demo"
-                        title="Live Demo"
-                      >
-                        <ExternalLink size={16} />
-                      </a>
+                      {/* Tech Badges */}
+                      <div className="d-flex flex-wrap gap-1.5 mb-4">
+                        {project.technologies?.slice(0, 4).map((tech, idx) => (
+                          <span
+                            key={idx}
+                            className="badge bg-secondary bg-opacity-25 text-cyan-400 font-code small"
+                            style={{ fontSize: '0.75rem' }}
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                        {project.technologies?.length > 4 && (
+                          <span className="badge bg-secondary bg-opacity-25 text-secondary font-code small" style={{ fontSize: '0.75rem' }}>
+                            +{project.technologies.length - 4}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions Footer */}
+                    <div className="d-flex flex-column gap-2 pt-3 border-top border-secondary border-opacity-25">
+                      <div className="d-flex align-items-center justify-content-between">
+                        <button
+                          onClick={() => setSelectedProject({
+                            ...project,
+                            image: project.image_url || project.image,
+                            shortDesc: project.short_description,
+                            githubUrl: project.github_url,
+                            liveUrl: project.live_url,
+                            details: {
+                              problem: project.problem_statement,
+                              solution: project.solution_architecture,
+                              features: project.features || [],
+                              role: project.my_role
+                            }
+                          })}
+                          className="btn btn-outline-brand btn-sm d-flex align-items-center gap-1"
+                        >
+                          <Info size={15} />
+                          <span>Details</span>
+                        </button>
+
+                        <button
+                          onClick={() => setXrayProject(project)}
+                          className="btn btn-brand btn-sm d-flex align-items-center gap-1 font-code"
+                        >
+                          <Cpu size={15} />
+                          <span>X-RAY</span>
+                        </button>
+                      </div>
+
+                      <div className="d-flex align-items-center justify-content-end gap-2">
+                        {project.github_url && (
+                          <a
+                            href={project.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-outline-brand btn-sm p-1.5 rounded-circle"
+                            title="GitHub Repo"
+                          >
+                            <Github size={15} />
+                          </a>
+                        )}
+                        {project.live_url && (
+                          <a
+                            href={project.live_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-outline-brand btn-sm p-1.5 rounded-circle"
+                            title="Live Demo"
+                          >
+                            <ExternalLink size={15} />
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Detail View Modal */}
+      {/* Standard Details Modal */}
       {selectedProject && (
-        <ProjectModal
-          project={selectedProject}
-          onClose={() => setSelectedProject(null)}
-        />
+        <Suspense fallback={null}>
+          <ProjectModal
+            project={selectedProject}
+            onClose={() => setSelectedProject(null)}
+          />
+        </Suspense>
+      )}
+
+      {/* Technical X-Ray Visual Architecture Modal */}
+      {xrayProject && (
+        <Suspense fallback={null}>
+          <ProjectXRayModal
+            project={xrayProject}
+            onClose={() => setXrayProject(null)}
+          />
+        </Suspense>
       )}
     </section>
   );
