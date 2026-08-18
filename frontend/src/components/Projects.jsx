@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Code, Github, ExternalLink, Info, Filter, Search, Cpu } from 'lucide-react';
+import { Code, Github, ExternalLink, Info, Filter, Cpu } from 'lucide-react';
 import { apiClient } from '../services/apiClient';
 
 const ProjectModal = lazy(() => import('./ProjectModal'));
@@ -8,7 +8,6 @@ const ProjectXRayModal = lazy(() => import('./ProjectXRayModal'));
 export default function Projects() {
   const [projects, setProjects] = useState([]);
   const [activeTab, setActiveTab] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState(null);
   const [xrayProject, setXrayProject] = useState(null);
@@ -18,14 +17,14 @@ export default function Projects() {
   useEffect(() => {
     let isMounted = true;
     setLoading(true);
-    apiClient.getProjects(activeTab, searchQuery).then((data) => {
+    apiClient.getProjects(activeTab).then((data) => {
       if (isMounted) {
         setProjects(data);
         setLoading(false);
       }
     });
     return () => { isMounted = false; };
-  }, [activeTab, searchQuery]);
+  }, [activeTab]);
 
   return (
     <section id="projects" className="section-padding position-relative">
@@ -43,33 +42,20 @@ export default function Projects() {
             Explore Suryakiran's full-stack web platforms, REST API services, and frontend applications. Powered dynamically by Django REST API.
           </p>
 
-          {/* Controls: Search Bar + Filter Tabs */}
-          <div className="max-w-700 mx-auto mb-4">
-            <div className="glass-panel p-2 rounded-pill d-flex align-items-center mb-3 shadow-sm">
-              <Search size={18} className="text-secondary ms-3 me-2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search projects by title, stack, or problem statement..."
-                className="form-control glass-panel border-0 text-primary small py-1.5 focus-none shadow-none"
-              />
-            </div>
-
-            <div className="d-flex flex-wrap align-items-center justify-content-center gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveTab(cat)}
-                  className={`btn ${
-                    activeTab === cat ? 'btn-brand' : 'btn-outline-brand'
-                  } px-3 py-1.5 rounded-pill font-semibold small transition-all`}
-                >
-                  {cat === 'All' && <Filter size={14} className="me-1" />}
-                  {cat}
-                </button>
-              ))}
-            </div>
+          {/* Category Filter Tabs */}
+          <div className="d-flex flex-wrap align-items-center justify-content-center gap-2 mt-4">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveTab(cat)}
+                className={`btn ${
+                  activeTab === cat ? 'btn-brand' : 'btn-outline-brand'
+                } px-3 py-1.5 rounded-pill font-semibold small transition-all`}
+              >
+                {cat === 'All' && <Filter size={14} className="me-1" />}
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -88,7 +74,7 @@ export default function Projects() {
           </div>
         ) : projects.length === 0 ? (
           <div className="text-center py-5 glass-card p-4">
-            <p className="text-secondary mb-0">No projects found matching category "{activeTab}" and query "{searchQuery}".</p>
+            <p className="text-secondary mb-0">No projects found in the "{activeTab}" category.</p>
           </div>
         ) : (
           <div className="row gy-4">

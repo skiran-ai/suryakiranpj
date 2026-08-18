@@ -459,3 +459,96 @@ code, pre, .font-code {
 .pulse-animation {
   animation: pulseAnimation 2s infinite ease-in-out;
 }
+
+/* ============================================================
+   RESPONSIVE NAVBAR — Mobile Brand + Toggler Fix
+   ============================================================ */
+
+/* Ensure the Bootstrap navbar container never overflows */
+.glass-nav .container {
+  flex-wrap: nowrap;
+  overflow: visible;
+}
+
+/* Shrink brand text on small screens to avoid toggler overlap */
+@media (max-width: 380px) {
+  .navbar-brand-text {
+    font-size: 0.82rem;
+    letter-spacing: -0.01em;
+  }
+}
+
+@media (max-width: 320px) {
+  .navbar-brand-text {
+    font-size: 0.76rem;
+  }
+}
+
+/* Collapsed nav panel on mobile: full-width, properly padded */
+.navbar-collapse.show.glass-card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Nav links inside mobile menu: full width, touch-friendly */
+@media (max-width: 991.98px) {
+  .navbar-nav {
+    width: 100%;
+  }
+  .navbar-nav .nav-item {
+    width: 100%;
+  }
+  .navbar-nav .nav-link {
+    width: 100%;
+    padding: 10px 4px;
+  }
+  /* AI dropdown in mobile: don't go off-screen */
+  .navbar-nav .dropdown-menu.show {
+    position: static !important;
+    width: 100%;
+    margin-top: 0.25rem;
+  }
+}
+
+/* ============================================================
+   CONTACT EMAIL — Overflow Fix
+   ============================================================ */
+
+.contact-email-link {
+  display: block;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  line-height: 1.4;
+}
+
+/* Extra safety: flex items in email card can shrink */
+@media (max-width: 480px) {
+  .contact-email-link {
+    font-size: 0.9rem;
+  }
+}
+
+/* ============================================================
+   GLOBAL MOBILE SAFETY — prevent unknown overflows
+   ============================================================ */
+
+@media (max-width: 576px) {
+  .section-subtitle {
+    font-size: 0.9rem !important;
+    padding: 0 0.5rem;
+  }
+
+  /* Project filter buttons — wrap on very small screens */
+  .btn-brand, .btn-outline-brand {
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* Project cards — full width on xs */
+  .col-md-6 {
+    /* Bootstrap handles this already, but add safety */
+    max-width: 100%;
+  }
+}

@@ -472,3 +472,216 @@
     padding: 1.25rem;
   }
 }
+
+/* ================================================================
+   ADMIN EXTRA-SMALL (< 576px) — Critical mobile fixes
+   ================================================================ */
+
+@media (max-width: 575.98px) {
+  /* Reduce content padding on small phones */
+  .admin-content-body {
+    padding: 0.875rem 0.75rem;
+  }
+
+  /* Topbar: truncate long path text, don't overflow */
+  .admin-topbar {
+    padding: 0 0.75rem;
+    height: auto;
+    min-height: 56px;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Smaller stat numbers on tiny screens */
+  .admin-stat-number {
+    font-size: 1.4rem;
+  }
+
+  /* Stat icon slightly smaller */
+  .admin-stat-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Stat cards: single column on < 576px */
+  .admin-stat-card {
+    gap: 0.875rem;
+  }
+
+  /* Admin cards: reduce padding */
+  .admin-card {
+    padding: 1.125rem;
+  }
+
+  /* Modal: nearly full screen on tiny phones */
+  .admin-modal-overlay {
+    padding: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .admin-modal-dialog {
+    max-height: 95vh;
+    border-radius: 1rem 1rem 0 0;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Sidebar footer: stack buttons vertically */
+  .admin-sidebar-footer {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .admin-sidebar-footer .admin-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Toast: full width on mobile */
+  .admin-toast {
+    left: 0.75rem;
+    right: 0.75rem;
+    bottom: 1rem;
+    width: auto;
+  }
+
+  /* Page-level action headers: stack on mobile */
+  .admin-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ================================================================
+   ADMIN TABLES — Responsive containment
+   Prevents tables from pushing page width > viewport
+   ================================================================ */
+
+.admin-table-container {
+  overflow-x: auto;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+}
+
+/* Tables: don't collapse below their content minimum */
+.admin-table {
+  min-width: 580px; /* allows scroll before content is unreadable */
+}
+
+/* Override for very simple tables that can go smaller */
+.admin-table.admin-table-compact {
+  min-width: auto;
+}
+
+/* ================================================================
+   ADMIN FORMS — Global responsive constraints
+   ================================================================ */
+
+.admin-input,
+.admin-select,
+.admin-textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Two-column admin form rows collapse to single column on mobile */
+@media (max-width: 575.98px) {
+  .admin-form-row {
+    flex-direction: column;
+  }
+
+  .admin-form-col {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Bootstrap col-md-6 in forms already collapses, but ensure no min-width issues */
+  .row > [class*="col-md-"],
+  .row > [class*="col-lg-"] {
+    min-width: 0;
+  }
+}
+
+/* ================================================================
+   ADMIN DASHBOARD STAT GRID — Ensure 1-col on 320px
+   The existing col-sm-6 col-lg-4 means 2-col starts at 576px.
+   For < 576px, Bootstrap defaults to full-width (col-12) already.
+   But add safety for any fixed-width issues.
+   ================================================================ */
+
+@media (max-width: 359px) {
+  /* Extreme small: ensure nothing bleeds out at 320px */
+  .admin-wrapper {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .admin-main {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  .admin-content-body {
+    padding: 0.625rem 0.5rem;
+  }
+
+  .admin-topbar {
+    padding: 0.5rem;
+  }
+
+  /* Force very small buttons to wrap text */
+  .admin-btn {
+    white-space: normal;
+    text-align: center;
+    height: auto;
+    min-height: 36px;
+  }
+}
+
+/* ================================================================
+   ADMIN TOPBAR — Path truncation
+   ================================================================ */
+
+.admin-topbar .font-monospace {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+}
+
+@media (min-width: 576px) {
+  .admin-topbar .font-monospace {
+    max-width: none;
+  }
+}
+
+/* ================================================================
+   ADMIN LOGIN PAGE — Mobile safety
+   ================================================================ */
+
+@media (max-width: 480px) {
+  .admin-card.p-sm-5 {
+    padding: 1.5rem !important;
+  }
+}
+
+/* ================================================================
+   ADMIN BUTTONS — Prevent overflow on action rows
+   ================================================================ */
+
+@media (max-width: 575.98px) {
+  /* Action button groups: allow wrapping */
+  .d-flex.gap-2:has(.admin-btn),
+  .d-flex.gap-3:has(.admin-btn) {
+    flex-wrap: wrap;
+  }
+
+  /* Full-width primary actions on mobile */
+  .admin-btn-primary:not(.admin-btn-sm) {
+    width: 100%;
+    justify-content: center;
+  }
+}

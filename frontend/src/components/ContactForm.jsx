@@ -82,19 +82,18 @@ export default function ContactForm() {
                   Feel free to reach out via email, inspect code repositories on GitHub, or connect on LinkedIn and Instagram.
                 </p>
 
-                {/* Email Box */}
                 <div className="glass-panel p-3 mb-3 d-flex align-items-center gap-3">
                   <div
-                    className="rounded-circle p-3 d-flex align-items-center justify-content-center"
+                    className="rounded-circle p-3 d-flex align-items-center justify-content-center flex-shrink-0"
                     style={{ background: 'var(--gradient-glow)', color: 'var(--accent-cyan)' }}
                   >
                     <Mail size={24} />
                   </div>
-                  <div>
+                  <div style={{ minWidth: 0 }}>
                     <span className="small text-muted d-block font-code">EMAIL ADDRESS</span>
                     <a
                       href="mailto:suryakiranpjineesh@gmail.com"
-                      className="text-primary fw-semibold text-decoration-none"
+                      className="text-primary fw-semibold text-decoration-none contact-email-link"
                     >
                       suryakiranpjineesh@gmail.com
                     </a>

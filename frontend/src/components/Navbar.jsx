@@ -34,19 +34,27 @@ export default function Navbar({ theme, toggleTheme, onOpenCV, onOpenCommandPale
     >
       <div className="container">
         {/* Brand Identity */}
-        <a className="navbar-brand d-flex align-items-center gap-2 font-code fw-bold text-primary" href="#">
-          <div className="rounded-circle p-1.5 d-flex align-items-center justify-content-center" style={{ background: 'var(--gradient-brand)', color: '#fff' }}>
+        <a
+          className="navbar-brand d-flex align-items-center gap-2 font-code fw-bold text-primary"
+          href="#"
+          style={{ minWidth: 0, flexShrink: 1 }}
+        >
+          <div
+            className="rounded-circle p-1.5 d-flex align-items-center justify-content-center flex-shrink-0"
+            style={{ background: 'var(--gradient-brand)', color: '#fff' }}
+          >
             <Terminal size={18} />
           </div>
-          <span>SURYAKIRAN<span className="text-gradient">.DEV</span></span>
+          <span className="navbar-brand-text">SURYAKIRAN<span className="text-gradient">.DEV</span></span>
         </a>
 
         {/* Mobile Toggle Button */}
         <button
-          className="navbar-toggler border-0 text-primary p-1 focus-none shadow-none"
+          className="navbar-toggler border-0 text-primary focus-none shadow-none flex-shrink-0"
           type="button"
           onClick={() => setNavOpen(!navOpen)}
           aria-label="Toggle navigation"
+          style={{ minWidth: '44px', minHeight: '44px', padding: '10px' }}
         >
           {navOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
