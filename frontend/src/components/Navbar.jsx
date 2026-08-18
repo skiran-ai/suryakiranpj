@@ -1,12 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Terminal, Command, FileText, Sun, Moon, Menu, X, Sparkles } from 'lucide-react';
 
 export default function Navbar({ theme, toggleTheme, onOpenCV, onOpenCommandPalette, onOpenAIWithMode }) {
   const [navOpen, setNavOpen] = useState(false);
   const [aiDropdownOpen, setAiDropdownOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      // Only hide after scrolling past 80px (clears the hero top area)
+      if (currentScrollY > 80) {
+        setHidden(currentScrollY > lastScrollY.current);
+      } else {
+        setHidden(false);
+      }
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg fixed-top glass-nav py-3" style={{ zIndex: 1030 }}>
+    <nav
+      className="navbar navbar-expand-lg fixed-top glass-nav py-3"
+      style={{
+        zIndex: 1030,
+        transform: hidden ? 'translateY(-100%)' : 'translateY(0)',
+        transition: 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+    >
       <div className="container">
         {/* Brand Identity */}
         <a className="navbar-brand d-flex align-items-center gap-2 font-code fw-bold text-primary" href="#">
