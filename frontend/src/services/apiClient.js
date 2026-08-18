@@ -7,7 +7,8 @@ const BASE_URL = (
 ).replace(/\/$/, '');
 
 async function fetchWithTimeout(resource, options = {}) {
-  const { timeout = 6000, ...fetchOptions } = options;
+  // Default 20s — handles Render free-tier cold-start (can take 15-30s to wake)
+  const { timeout = 20000, ...fetchOptions } = options;
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
 
@@ -198,9 +199,11 @@ export const apiClient = {
 
   async submitContact(formData) {
     try {
+      // 25s timeout — contact submit must survive Render cold-start
       const res = await fetchWithTimeout(`${BASE_URL}/api/contact/`, {
         method: 'POST',
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        timeout: 25000
       });
       const data = await res.json().catch(() => ({}));
       if (res.ok && data.success) {
@@ -219,10 +222,13 @@ export const apiClient = {
       }
       return { success: false, message: errorMsg };
     } catch (err) {
+      const isTimeout = err.name === 'AbortError';
       console.error("Django Contact API error:", err.message);
       return {
         success: false,
-        message: "Unable to reach server. Please check your internet connection or email suryakiranpjineesh@gmail.com directly."
+        message: isTimeout
+          ? "The server is waking up — please wait a moment and try again. (First message after inactivity may take ~30 seconds)"
+          : "Unable to reach server. Please check your internet connection or email suryakiranpjineesh@gmail.com directly."
       };
     }
   },

@@ -214,7 +214,7 @@ export default function ContactForm() {
                       {status.submitting ? (
                         <>
                           <Loader2 size={18} className="animate-spin me-2" />
-                          <span>Sending Message...</span>
+                          <span>Sending... (may take up to 30s on first send)</span>
                         </>
                       ) : (
                         <>
