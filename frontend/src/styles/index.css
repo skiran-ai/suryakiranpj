@@ -77,6 +77,8 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
@@ -84,8 +86,36 @@ body {
   color: var(--text-primary);
   font-family: var(--font-sans);
   line-height: 1.6;
+  max-width: 100vw;
   overflow-x: hidden;
   transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Ultrawide & Standard Container Scaling */
+.container {
+  width: 100%;
+  padding-right: var(--bs-gutter-x, 0.75rem);
+  padding-left: var(--bs-gutter-x, 0.75rem);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1440px;
+  }
+}
+
+@media (min-width: 2560px) {
+  .container {
+    max-width: 1600px;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -94,6 +124,26 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
+
+@media (max-width: 576px) {
+  .display-2 {
+    font-size: 2.15rem !important;
+  }
+  .display-5 {
+    font-size: 1.85rem !important;
+  }
+  .display-6 {
+    font-size: 1.25rem !important;
+  }
+  .hero-title {
+    font-size: 2.1rem !important;
+    word-break: break-word;
+  }
+  .section-subtitle {
+    font-size: 0.95rem !important;
+  }
+}
+
 
 code, pre, .font-code {
   font-family: var(--font-code);

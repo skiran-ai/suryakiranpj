@@ -202,16 +202,31 @@ export const apiClient = {
         method: 'POST',
         body: JSON.stringify(formData)
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok && data.success) {
-        return { success: true, message: data.message };
+        return {
+          success: true,
+          email_delivered: data.email_delivered !== false,
+          message: data.message || "Thank you! Your message has been sent successfully."
+        };
       }
-      return { success: false, message: data.message || "Failed to submit message." };
+      let errorMsg = data.message || "Failed to submit contact message. Please verify required fields.";
+      if (data.errors) {
+        const fieldErrors = Object.entries(data.errors)
+          .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+          .join(' | ');
+        if (fieldErrors) errorMsg = fieldErrors;
+      }
+      return { success: false, message: errorMsg };
     } catch (err) {
-      console.warn("Django Contact API error, using fallback confirmation:", err.message);
-      return { success: true, message: "Thank you! Your message has been recorded." };
+      console.error("Django Contact API error:", err.message);
+      return {
+        success: false,
+        message: "Unable to reach server. Please check your internet connection or email suryakiranpjineesh@gmail.com directly."
+      };
     }
   },
+
 
   async queryAIChat(message, mode = 'STANDARD') {
     try {

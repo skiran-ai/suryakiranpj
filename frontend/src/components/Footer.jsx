@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { personalInfo } from '../data/portfolioData';
 import SocialLinks from './SocialLinks';
-import { Code2, Heart } from 'lucide-react';
+import { Code2, Lock } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -33,9 +34,20 @@ export default function Footer() {
             <div className="d-flex justify-content-center justify-content-md-end mb-3">
               <SocialLinks iconSize={18} />
             </div>
-            <p className="small text-muted mb-0">
+            <p className="small text-muted mb-1">
               © {currentYear} Suryakiran P. J. All rights reserved. Crafted with Python, React & Bootstrap 5.
             </p>
+            <div>
+              <Link
+                to="/admin/login"
+                className="text-secondary text-decoration-none small opacity-50 hover-opacity-100 d-inline-flex align-items-center gap-1 font-monospace"
+                style={{ transition: 'opacity 0.2s ease', fontSize: '0.75rem' }}
+                title="System Command Console"
+              >
+                <Lock size={11} />
+                <span>Admin</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

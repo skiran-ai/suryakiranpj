@@ -7,25 +7,40 @@ from api.models import (
 )
 
 class Command(BaseCommand):
-    help = 'Safely seeds initial portfolio data for Suryakiran P. J. without duplicating or overwriting existing records.'
+    help = 'Safely seeds initial portfolio data for Suryakiran P. J. without overwriting admin edits on deployments.'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--force',
+            action='store_true',
+            help='Force re-seed all initial records even if data already exists in the database.'
+        )
 
     def handle(self, *args, **options):
-        self.stdout.write(self.style.SUCCESS("Starting safe, idempotent database seeding..."))
+        force = options.get('force', False)
+        self.stdout.write(self.style.SUCCESS(f"Checking database seed state (force={force})..."))
 
         # 0. Ensure Admin Superuser Exists (admin / surya007)
-        admin_user, admin_created = User.objects.get_or_create(
-            username="admin",
-            defaults={
-                "email": "suryakiranpjineesh@gmail.com",
-                "is_staff": True,
-                "is_superuser": True
-            }
-        )
-        admin_user.set_password("surya007")
-        admin_user.is_staff = True
-        admin_user.is_superuser = True
-        admin_user.save()
-        self.stdout.write(f"Admin Superuser: {'Created' if admin_created else 'Password & permissions verified'} (user: admin).")
+        admin_exists = User.objects.filter(username="admin").exists()
+        if not admin_exists or force:
+            admin_user, admin_created = User.objects.get_or_create(
+                username="admin",
+                defaults={
+                    "email": "suryakiranpjineesh@gmail.com",
+                    "is_staff": True,
+                    "is_superuser": True
+                }
+            )
+            if admin_created or force:
+                admin_user.set_password("surya007")
+                admin_user.is_staff = True
+                admin_user.is_superuser = True
+                admin_user.save()
+                self.stdout.write(f"Admin Superuser: {'Created' if admin_created else 'Reset'} (user: admin).")
+            else:
+                self.stdout.write("Admin Superuser: Already exists (password and permissions preserved).")
+        else:
+            self.stdout.write("Admin Superuser: Already exists (preserved).")
 
         # 1. Profile (Preserve admin changes if record already exists)
         profile_defaults = {
@@ -41,11 +56,14 @@ class Command(BaseCommand):
             "availability": "Available for Full-time Roles & High-Impact Projects",
             "is_active": True
         }
-        profile_obj, created = Profile.objects.get_or_create(
-            email="suryakiranpjineesh@gmail.com",
-            defaults=profile_defaults
-        )
-        self.stdout.write(f"Profile: {'Created' if created else 'Already exists (preserved)'}.")
+        if not Profile.objects.exists() or force:
+            profile_obj, created = Profile.objects.get_or_create(
+                email="suryakiranpjineesh@gmail.com",
+                defaults=profile_defaults
+            )
+            self.stdout.write(f"Profile: {'Created' if created else 'Already exists (preserved)'}.")
+        else:
+            self.stdout.write("Profile: Already configured in database (preserved).")
 
         # 2. Site Setting & Privacy Switch (Idempotent - never resets custom admin mode)
         site_defaults = {
@@ -54,11 +72,14 @@ class Command(BaseCommand):
             "allow_contact_form": True,
             "allow_ai_assistant": True
         }
-        setting_obj, created = SiteSetting.objects.get_or_create(
-            id=1,
-            defaults=site_defaults
-        )
-        self.stdout.write(f"Site Setting: {'Created' if created else 'Already exists (preserved)'}.")
+        if not SiteSetting.objects.exists() or force:
+            setting_obj, created = SiteSetting.objects.get_or_create(
+                id=1,
+                defaults=site_defaults
+            )
+            self.stdout.write(f"Site Setting: {'Created' if created else 'Already exists (preserved)'}.")
+        else:
+            self.stdout.write("Site Setting: Already configured (preserved).")
 
         # 3. Social Links
         socials = [
@@ -67,12 +88,15 @@ class Command(BaseCommand):
             {"platform": "Instagram", "url": "https://www.instagram.com/jstt.kiran", "icon_name": "Instagram", "order": 3, "is_visible": True},
             {"platform": "Email", "url": "mailto:suryakiranpjineesh@gmail.com", "icon_name": "Mail", "order": 4, "is_visible": True},
         ]
-        for s in socials:
-            SocialLink.objects.get_or_create(
-                platform=s["platform"],
-                defaults=s
-            )
-        self.stdout.write("Social Links verified/seeded.")
+        if not SocialLink.objects.exists() or force:
+            for s in socials:
+                SocialLink.objects.get_or_create(
+                    platform=s["platform"],
+                    defaults=s
+                )
+            self.stdout.write("Social Links: Initial seed complete.")
+        else:
+            self.stdout.write("Social Links: Already present (preserved).")
 
         # 4. Skills
         skills = [
@@ -101,72 +125,87 @@ class Command(BaseCommand):
             {"name": "UI / UX Engineering", "category": "development", "badge": "Modern Cinematic Aesthetic", "icon_name": "Sparkles", "proficiency": 90, "order": 3},
             {"name": "Full Stack Architecture", "category": "development", "badge": "End-to-End Frontend/Backend Integration", "icon_name": "Layers", "proficiency": 89, "order": 4},
         ]
-        for sk in skills:
-            Skill.objects.get_or_create(
-                name=sk["name"],
-                category=sk["category"],
-                defaults=sk
-            )
-        self.stdout.write("Skills verified/seeded.")
+        if not Skill.objects.exists() or force:
+            for sk in skills:
+                Skill.objects.get_or_create(
+                    name=sk["name"],
+                    category=sk["category"],
+                    defaults=sk
+                )
+            self.stdout.write("Skills: Initial seed complete.")
+        else:
+            self.stdout.write("Skills: Already present (preserved).")
 
         # 5. Education
-        Education.objects.get_or_create(
-            institution="MG University",
-            degree="Bachelor of Science in Computer Science",
-            defaults={
-                "field_of_study": "Computer Science & Software Engineering",
-                "start_year": 2020,
-                "end_year": 2023,
-                "grade": "First Class",
-                "description": "Comprehensive coursework in computer science fundamentals, data structures, object-oriented programming, database management systems, and software engineering methodologies.",
-                "order": 1
-            }
-        )
-        self.stdout.write("Education verified/seeded.")
+        if not Education.objects.exists() or force:
+            Education.objects.get_or_create(
+                institution="MG University",
+                degree="Bachelor of Science in Computer Science",
+                defaults={
+                    "field_of_study": "Computer Science & Software Engineering",
+                    "start_year": 2020,
+                    "end_year": 2023,
+                    "grade": "First Class",
+                    "description": "Comprehensive coursework in computer science fundamentals, data structures, object-oriented programming, database management systems, and software engineering methodologies.",
+                    "order": 1
+                }
+            )
+            self.stdout.write("Education: Initial seed complete.")
+        else:
+            self.stdout.write("Education: Already present (preserved).")
 
         # 6. Experience
-        Experience.objects.get_or_create(
-            company="Independent Software Engineering",
-            role="Python Full Stack Developer",
-            defaults={
-                "location": "Kerala, India / Remote",
-                "start_date": datetime.date(2023, 6, 1),
-                "is_current": True,
-                "summary": "Architecting and deploying full-stack web platforms using Python, Django REST Framework, and React.js. Implementing clean RESTful API standards, database models, rate limiting, and glassmorphism user interfaces.",
-                "bullet_points": [
-                    "Designed and built DevNexus, SwiftCart, and PyEngine backend REST APIs",
-                    "Created responsive React component architectures connected to Django APIs",
-                    "Engineered custom management commands and database ORM optimizations"
-                ],
-                "order": 1
-            }
-        )
-        self.stdout.write("Experience verified/seeded.")
+        if not Experience.objects.exists() or force:
+            Experience.objects.get_or_create(
+                company="Independent Software Engineering",
+                role="Python Full Stack Developer",
+                defaults={
+                    "location": "Kerala, India / Remote",
+                    "start_date": datetime.date(2023, 6, 1),
+                    "is_current": True,
+                    "summary": "Architecting and deploying full-stack web platforms using Python, Django REST Framework, and React.js. Implementing clean RESTful API standards, database models, rate limiting, and glassmorphism user interfaces.",
+                    "bullet_points": [
+                        "Designed and built DevNexus, SwiftCart, and PyEngine backend REST APIs",
+                        "Created responsive React component architectures connected to Django APIs",
+                        "Engineered custom management commands and database ORM optimizations"
+                    ],
+                    "order": 1
+                }
+            )
+            self.stdout.write("Experience: Initial seed complete.")
+        else:
+            self.stdout.write("Experience: Already present (preserved).")
 
         # 7. Certifications
-        Certification.objects.get_or_create(
-            title="Python & Django Full Stack Engineering",
-            issuing_organization="Full Stack Software Academy",
-            defaults={
-                "issue_date": datetime.date(2023, 5, 15),
-                "credential_id": "CERT-PY-2023-8891",
-                "credential_url": "https://github.com/skiran-ai",
-                "order": 1
-            }
-        )
-        self.stdout.write("Certifications verified/seeded.")
+        if not Certification.objects.exists() or force:
+            Certification.objects.get_or_create(
+                title="Python & Django Full Stack Engineering",
+                issuing_organization="Full Stack Software Academy",
+                defaults={
+                    "issue_date": datetime.date(2023, 5, 15),
+                    "credential_id": "CERT-PY-2023-8891",
+                    "credential_url": "https://github.com/skiran-ai",
+                    "order": 1
+                }
+            )
+            self.stdout.write("Certifications: Initial seed complete.")
+        else:
+            self.stdout.write("Certifications: Already present (preserved).")
 
         # 8. Achievements
-        Achievement.objects.get_or_create(
-            title="B.Sc. Computer Science Graduate with Honors",
-            defaults={
-                "description": "Successfully completed degree at MG University with distinction in software engineering and database projects.",
-                "metric": "First Class Honors",
-                "date": datetime.date(2023, 4, 30),
-                "order": 1
-            }
-        )
-        self.stdout.write("Achievements verified/seeded.")
+        if not Achievement.objects.exists() or force:
+            Achievement.objects.get_or_create(
+                title="B.Sc. Computer Science Graduate with Honors",
+                defaults={
+                    "description": "Successfully completed degree at MG University with distinction in software engineering and database projects.",
+                    "metric": "First Class Honors",
+                    "date": datetime.date(2023, 4, 30),
+                    "order": 1
+                }
+            )
+            self.stdout.write("Achievements: Initial seed complete.")
+        else:
+            self.stdout.write("Achievements: Already present (preserved).")
 
         # 9. Projects
         projects_data = [
@@ -334,12 +373,15 @@ class Command(BaseCommand):
             }
         ]
 
-        for p in projects_data:
-            Project.objects.get_or_create(
-                slug=p["slug"],
-                defaults=p
-            )
-        self.stdout.write("Projects verified/seeded.")
+        if not Project.objects.exists() or force:
+            for p in projects_data:
+                Project.objects.get_or_create(
+                    slug=p["slug"],
+                    defaults=p
+                )
+            self.stdout.write("Projects: Initial seed complete.")
+        else:
+            self.stdout.write("Projects: Already configured in database (preserved).")
 
         # 10. Services
         services_data = [
@@ -368,12 +410,15 @@ class Command(BaseCommand):
                 "order": 3
             }
         ]
-        for s in services_data:
-            Service.objects.get_or_create(
-                title=s["title"],
-                defaults=s
-            )
-        self.stdout.write("Services verified/seeded.")
+        if not Service.objects.exists() or force:
+            for s in services_data:
+                Service.objects.get_or_create(
+                    title=s["title"],
+                    defaults=s
+                )
+            self.stdout.write("Services: Initial seed complete.")
+        else:
+            self.stdout.write("Services: Already configured in database (preserved).")
 
         # 11. AI Knowledge Documents
         ai_docs = [
@@ -413,12 +458,15 @@ class Command(BaseCommand):
                 "priority": 6
             }
         ]
-        for doc in ai_docs:
-            AIKnowledgeDocument.objects.get_or_create(
-                title=doc["title"],
-                topic=doc["topic"],
-                defaults=doc
-            )
-        self.stdout.write("AI Knowledge Documents verified/seeded.")
+        if not AIKnowledgeDocument.objects.exists() or force:
+            for doc in ai_docs:
+                AIKnowledgeDocument.objects.get_or_create(
+                    title=doc["title"],
+                    topic=doc["topic"],
+                    defaults=doc
+                )
+            self.stdout.write("AI Knowledge Documents: Initial seed complete.")
+        else:
+            self.stdout.write("AI Knowledge Documents: Already present (preserved).")
 
-        self.stdout.write(self.style.SUCCESS("Safe database seeding verified successfully!"))
+        self.stdout.write(self.style.SUCCESS("Safe, idempotent database seed check complete!"))

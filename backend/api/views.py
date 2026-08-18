@@ -2,15 +2,19 @@ import time
 import os
 import urllib.request
 import json
+import logging
 from django.db import connection
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage, send_mail
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions, generics
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.authtoken.models import Token
+
+logger = logging.getLogger('api')
+
 
 from .models import (
     Profile, Project, Skill, Experience, Education, Certification,
@@ -277,33 +281,72 @@ class ContactSubmitView(APIView):
             }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         serializer = ContactMessageSerializer(data=request.data)
-        if serializer.is_valid():
-            client_ip = request.META.get('REMOTE_ADDR')
-            contact_instance = serializer.save(ip_address=client_ip)
+        if not serializer.is_valid():
+            return Response({
+                "success": False,
+                "errors": serializer.errors,
+                "message": "Invalid submission details. Please check the required fields."
+            }, status=status.HTTP_400_BAD_REQUEST)
 
-            # Optional SMTP notification trigger
-            if getattr(settings, 'EMAIL_HOST_USER', None):
-                try:
-                    send_mail(
-                        subject=f"Portfolio Inquiry: {contact_instance.subject or 'General Inquiry'}",
-                        message=f"Name: {contact_instance.name}\nEmail: {contact_instance.email}\nIP: {client_ip}\n\nMessage:\n{contact_instance.message}",
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[settings.DEFAULT_FROM_EMAIL],
-                        fail_silently=True,
-                    )
-                except Exception as mail_err:
-                    print(f"SMTP Log Notice: {mail_err}")
+        client_ip = request.META.get('HTTP_X_FORWARDED_FOR', request.META.get('REMOTE_ADDR'))
+        if client_ip and ',' in client_ip:
+            client_ip = client_ip.split(',')[0].strip()
 
+        # 1. Durable Record Storage in PostgreSQL
+        contact_instance = serializer.save(ip_address=client_ip)
+
+        # 2. Transactional Email Notification
+        email_sent = False
+        recipient_email = getattr(settings, 'CONTACT_EMAIL', 'suryakiranpjineesh@gmail.com')
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'suryakiranpjineesh@gmail.com')
+
+        subject_line = f"[Portfolio Contact] {contact_instance.subject or 'New Inquiry from ' + contact_instance.name}"
+        body_content = (
+            f"====================================================\n"
+            f"NEW PORTFOLIO CONTACT INQUIRY\n"
+            f"====================================================\n\n"
+            f"Name:       {contact_instance.name}\n"
+            f"Email:      {contact_instance.email}\n"
+            f"Subject:    {contact_instance.subject or 'N/A'}\n"
+            f"Date/Time:  {contact_instance.created_at.strftime('%Y-%m-%d %H:%M:%S UTC')}\n"
+            f"Client IP:  {client_ip or 'Unknown'}\n\n"
+            f"----------------------------------------------------\n"
+            f"MESSAGE CONTENT:\n"
+            f"----------------------------------------------------\n"
+            f"{contact_instance.message}\n\n"
+            f"====================================================\n"
+            f"Note: Replying to this email will reply directly to {contact_instance.email}.\n"
+        )
+
+        try:
+            email_msg = EmailMessage(
+                subject=subject_line,
+                body=body_content,
+                from_email=from_email,
+                to=[recipient_email],
+                reply_to=[contact_instance.email],
+            )
+            email_msg.send(fail_silently=False)
+            email_sent = True
+            logger.info(f"Contact email successfully sent for message ID #{contact_instance.id} from {contact_instance.email}")
+        except Exception as mail_err:
+            logger.error(f"Contact email delivery exception for message ID #{contact_instance.id}: {mail_err}", exc_info=True)
+
+        if email_sent:
             return Response({
                 "success": True,
-                "message": "Thank you! Your message has been received successfully."
+                "email_delivered": True,
+                "message": "Thank you! Your message has been sent successfully. I'll get back to you soon.",
+                "id": contact_instance.id
+            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response({
+                "success": True,
+                "email_delivered": False,
+                "message": "Thank you! Your message has been safely recorded in the database. Notification dispatch had a slight delay, but your message is stored.",
+                "id": contact_instance.id
             }, status=status.HTTP_201_CREATED)
 
-        return Response({
-            "success": False,
-            "errors": serializer.errors,
-            "message": "Invalid submission details. Please check the required fields."
-        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CVMetadataView(APIView):
