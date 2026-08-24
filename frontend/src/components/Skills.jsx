@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Cpu, Terminal, Database, Shield, Smartphone, Globe, Sparkles, Layers, Code, Layout } from 'lucide-react';
+import { Cpu, Terminal, Database, Shield, Smartphone, Globe, Sparkles, Layers, Code, Layout, Bot, Zap } from 'lucide-react';
 import { apiClient } from '../services/apiClient';
 
 const iconMap = {
-  Code, Layers, Layout, Terminal, Cpu, Database, Globe, Shield, Smartphone, Sparkles
+  Code, Layers, Layout, Terminal, Cpu, Database, Globe, Shield, Smartphone, Sparkles, Bot, Zap
 };
 
 export default function Skills() {
@@ -30,6 +30,7 @@ export default function Skills() {
 
   const categories = [
     { key: 'all', label: 'All Stack' },
+    { key: 'ai', label: 'AI & LLM' },
     { key: 'frontend', label: 'Frontend' },
     { key: 'backend', label: 'Backend' },
     { key: 'tools', label: 'Tools & DevOps' },
@@ -53,7 +54,7 @@ export default function Skills() {
             Skills & <span className="text-gradient">Tech Stack</span>
           </h2>
           <p className="section-subtitle">
-            Comprehensive breakdown of Suryakiran's technical proficiency across frontend engineering, backend Python/Django systems, and developer tools.
+            Comprehensive breakdown of Suryakiran's technical proficiency across AI agents, LLM architectures, backend Python/Django systems, and frontend engineering.
           </p>
 
           {/* Filter Chips */}

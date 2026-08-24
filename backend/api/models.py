@@ -74,6 +74,7 @@ class Project(models.Model):
 
 class Skill(models.Model):
     CATEGORY_CHOICES = (
+        ('ai', 'AI & Machine Learning'),
         ('frontend', 'Frontend'),
         ('backend', 'Backend'),
         ('tools', 'Tools & DevOps'),

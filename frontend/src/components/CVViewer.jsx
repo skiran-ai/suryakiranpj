@@ -96,7 +96,7 @@ export default function CVViewer({ isOpen, onClose }) {
           <div className="mb-4">
             <h4 className="h6 text-cyan-400 font-code text-uppercase fw-bold mb-2">Professional Profile</h4>
             <p className="small text-secondary mb-0" style={{ lineHeight: '1.6' }}>
-              Enthusiastic and results-driven Python Full Stack Developer with a solid foundation in computer science and full-stack web architecture. Specialized in designing scalable RESTful backend APIs using Python & Django REST Framework, paired with responsive, component-driven user interfaces in React.js, JavaScript, and Bootstrap 5.
+              Enthusiastic and results-driven Python Full Stack & AI Engineer with a solid foundation in computer science, full-stack web architecture, and modern Generative AI engineering. Specialized in building autonomous AI agents, verified RAG pipelines, fine-tuned LLM architectures, and scalable RESTful backend APIs in Django & FastAPI, paired with dynamic React.js interfaces.
             </p>
           </div>
 
@@ -105,16 +105,16 @@ export default function CVViewer({ isOpen, onClose }) {
             <h4 className="h6 text-cyan-400 font-code text-uppercase fw-bold mb-2">Core Skill Matrix</h4>
             <div className="row gy-2 small text-secondary">
               <div className="col-md-6">
-                <strong>Frontend:</strong> React.js, JavaScript (ES6+), HTML5, CSS3, Bootstrap 5, Glassmorphism
+                <strong>AI & LLM Engineering:</strong> LangGraph, LangChain, LlamaIndex, QLoRA, Unsloth, Vector DBs (Chroma/Qdrant), vLLM, OpenAI & Claude APIs
               </div>
               <div className="col-md-6">
-                <strong>Backend:</strong> Python, Django, Django REST Framework, REST API Design, JSON
+                <strong>Backend Engineering:</strong> Python 3.11+, Django, Django REST Framework, FastAPI, REST & SSE Streaming, Celery & Redis
               </div>
               <div className="col-md-6">
-                <strong>Database & Security:</strong> Relational Modeling (PostgreSQL / SQLite), Rate Throttling, CORS, Auth
+                <strong>Frontend Development:</strong> React.js, JavaScript (ES6+), HTML5, CSS3, Bootstrap 5, Glassmorphism UI, Plotly/ECharts
               </div>
               <div className="col-md-6">
-                <strong>Tools & Workflow:</strong> Git, GitHub, VS Code, Postman API Testing & Specs
+                <strong>Databases & DevOps:</strong> PostgreSQL, SQLite, DuckDB, Docker Sandboxing, Git/GitHub, Weights & Biases, Postman
               </div>
             </div>
           </div>
@@ -125,26 +125,42 @@ export default function CVViewer({ isOpen, onClose }) {
             <div className="d-flex flex-column gap-3">
               <div>
                 <div className="d-flex justify-content-between align-items-center">
+                  <strong className="text-primary">DataSense AI — Autonomous AI Data Analyst & BI Agent</strong>
+                  <span className="badge bg-secondary bg-opacity-25 font-code small">LangGraph + Sandbox</span>
+                </div>
+                <p className="small text-secondary mb-0">Autonomous ReAct agent that ingests CSV/SQL datasets, writes/executes Python in an isolated Docker sandbox, and synthesizes dynamic charts with business anomaly insights.</p>
+              </div>
+
+              <div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong className="text-primary">OmniRAG — Agentic Document Intelligence & Verification Engine</strong>
+                  <span className="badge bg-secondary bg-opacity-25 font-code small">LlamaIndex + Hybrid Search</span>
+                </div>
+                <p className="small text-secondary mb-0">Enterprise agentic RAG assistant featuring hybrid dense/BM25 retrieval, cross-encoder re-ranking, automated hallucination grading, and precise page citation previews.</p>
+              </div>
+
+              <div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong className="text-primary">SynapseSaaS — AI Code Reviewer & Architecture Studio</strong>
+                  <span className="badge bg-secondary bg-opacity-25 font-code small">Django + React + SSE</span>
+                </div>
+                <p className="small text-secondary mb-0">Full-stack GenAI SaaS with GitHub PR webhooks, token-by-token streaming code reviews, automated Mermaid architecture diagrams, and Stripe billing tiers.</p>
+              </div>
+
+              <div>
+                <div className="d-flex justify-content-between align-items-center">
+                  <strong className="text-primary">FinGuard-LLM — Domain-Specialized Financial & Compliance LLM</strong>
+                  <span className="badge bg-secondary bg-opacity-25 font-code small">QLoRA + Unsloth + vLLM</span>
+                </div>
+                <p className="small text-secondary mb-0">Domain-adapted 7B parameter LLM fine-tuned on 50k+ SEC 10-K filings with 4-bit QLoRA, delivering 34% lower error rate and 4x inference speedup.</p>
+              </div>
+
+              <div>
+                <div className="d-flex justify-content-between align-items-center">
                   <strong className="text-primary">DevNexus — Full Stack Project Manager</strong>
                   <span className="badge bg-secondary bg-opacity-25 font-code small">Django + React</span>
                 </div>
                 <p className="small text-secondary mb-0">Full-stack project collaboration platform featuring DRF token authentication, custom serializers, and React Kanban state tracking board.</p>
-              </div>
-
-              <div>
-                <div className="d-flex justify-content-between align-items-center">
-                  <strong className="text-primary">SwiftCart — Modern E-Commerce Engine</strong>
-                  <span className="badge bg-secondary bg-opacity-25 font-code small">Django + React</span>
-                </div>
-                <p className="small text-secondary mb-0">High-performance digital storefront with real-time shopping cart state, category filters, and administrative product catalog management.</p>
-              </div>
-
-              <div>
-                <div className="d-flex justify-content-between align-items-center">
-                  <strong className="text-primary">PyEngine — Django REST API Service</strong>
-                  <span className="badge bg-secondary bg-opacity-25 font-code small">Python / DRF</span>
-                </div>
-                <p className="small text-secondary mb-0">Modular backend API architecture featuring custom serializers, error handlers, endpoint throttling, and Postman API specs.</p>
               </div>
             </div>
           </div>

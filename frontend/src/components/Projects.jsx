@@ -12,7 +12,7 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [xrayProject, setXrayProject] = useState(null);
 
-  const categories = ['All', 'Full Stack', 'Backend', 'Frontend', 'AI/ML'];
+  const categories = ['All', 'AI/ML', 'Full Stack', 'Backend', 'Frontend'];
 
   useEffect(() => {
     let isMounted = true;
@@ -39,7 +39,7 @@ export default function Projects() {
             Projects <span className="text-gradient">Showcase</span>
           </h2>
           <p className="section-subtitle">
-            Explore Suryakiran's full-stack web platforms, REST API services, and frontend applications. Powered dynamically by Django REST API.
+            Explore Suryakiran's autonomous AI agents, verified RAG pipelines, GenAI SaaS platforms, fine-tuned LLMs, and scalable full-stack web applications. Powered dynamically by Django REST API.
           </p>
 
           {/* Category Filter Tabs */}

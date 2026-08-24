@@ -163,6 +163,7 @@ export const apiClient = {
     }));
 
     const all = [
+      ...mapCategory(skillsData.ai || [], 'ai', 'AI & Machine Learning'),
       ...mapCategory(skillsData.frontend, 'frontend', 'Frontend'),
       ...mapCategory(skillsData.backend, 'backend', 'Backend'),
       ...mapCategory(skillsData.tools, 'tools', 'Tools & DevOps'),
@@ -172,6 +173,7 @@ export const apiClient = {
     return {
       all,
       grouped: {
+        ai: mapCategory(skillsData.ai || [], 'ai', 'AI & Machine Learning'),
         frontend: mapCategory(skillsData.frontend, 'frontend', 'Frontend'),
         backend: mapCategory(skillsData.backend, 'backend', 'Backend'),
         tools: mapCategory(skillsData.tools, 'tools', 'Tools & DevOps'),

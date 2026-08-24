@@ -191,6 +191,7 @@ class SkillListView(APIView):
         
         # Categorized payload for convenient frontend consumption
         grouped = {
+            "ai": [],
             "frontend": [],
             "backend": [],
             "tools": [],
