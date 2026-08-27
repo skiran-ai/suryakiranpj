@@ -551,4 +551,43 @@ code, pre, .font-code {
     /* Bootstrap handles this already, but add safety */
     max-width: 100%;
   }
+
+  /* Padding adjustments for glass cards on mobile */
+  .glass-card {
+    border-radius: var(--radius-sm);
+  }
 }
+
+/* ============================================================
+   INTERACTIVE & FORM UTILITIES
+   ============================================================ */
+
+.hover-cyan {
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.hover-cyan:hover {
+  color: var(--accent-cyan) !important;
+}
+
+.form-control {
+  color: var(--text-primary);
+  background-color: var(--bg-glass);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast);
+}
+
+.form-control:focus {
+  background-color: var(--bg-glass) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--accent-cyan) !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25) !important;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 0.85;
+}
+
