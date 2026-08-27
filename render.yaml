@@ -22,11 +22,11 @@ services:
           name: suryakiran-portfolio-db
           property: connectionString
       - key: DJANGO_ALLOWED_HOSTS
-        sync: false
+        value: "suryakiran-portfolio-api.onrender.com,api.suryakiranpj.com,suryakiranpj.com,www.suryakiranpj.com"
       - key: CORS_ALLOWED_ORIGINS
-        sync: false
+        value: "https://www.suryakiranpj.com,https://suryakiranpj.com,https://suryakiranpj.netlify.app"
       - key: CSRF_TRUSTED_ORIGINS
-        sync: false
+        value: "https://www.suryakiranpj.com,https://suryakiranpj.com,https://suryakiranpj.netlify.app"
       - key: GEMINI_API_KEY
         sync: false
       - key: SECURE_SSL_REDIRECT
@@ -35,3 +35,19 @@ services:
         value: "True"
       - key: CSRF_COOKIE_SECURE
         value: "True"
+      - key: EMAIL_BACKEND
+        value: "django.core.mail.backends.smtp.EmailBackend"
+      - key: EMAIL_HOST
+        value: "smtp.gmail.com"
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "True"
+      - key: EMAIL_HOST_USER
+        value: "suryakiranpjineesh@gmail.com"
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        value: "suryakiranpjineesh@gmail.com"
+      - key: CONTACT_EMAIL
+        value: "suryakiranpjineesh@gmail.com"

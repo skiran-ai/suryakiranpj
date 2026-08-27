@@ -299,7 +299,7 @@ class ContactSubmitView(APIView):
         # 2. Transactional Email Notification
         email_sent = False
         recipient_email = getattr(settings, 'CONTACT_EMAIL', 'suryakiranpjineesh@gmail.com')
-        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'suryakiranpjineesh@gmail.com')
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', '') or getattr(settings, 'EMAIL_HOST_USER', '') or 'suryakiranpjineesh@gmail.com'
 
         subject_line = f"[Portfolio Contact] {contact_instance.subject or 'New Inquiry from ' + contact_instance.name}"
         body_content = (
@@ -320,16 +320,27 @@ class ContactSubmitView(APIView):
         )
 
         try:
-            email_msg = EmailMessage(
-                subject=subject_line,
-                body=body_content,
-                from_email=from_email,
-                to=[recipient_email],
-                reply_to=[contact_instance.email],
-            )
-            email_msg.send(fail_silently=False)
-            email_sent = True
-            logger.info(f"Contact email successfully sent for message ID #{contact_instance.id} from {contact_instance.email}")
+            email_backend_name = str(getattr(settings, 'EMAIL_BACKEND', ''))
+            is_smtp = 'smtp' in email_backend_name.lower()
+            host_user = getattr(settings, 'EMAIL_HOST_USER', '')
+            host_password = getattr(settings, 'EMAIL_HOST_PASSWORD', '')
+
+            if is_smtp and (not host_user or not host_password):
+                logger.warning(
+                    f"EMAIL_HOST_USER or EMAIL_HOST_PASSWORD is not set in environment variables. "
+                    f"Message #{contact_instance.id} from {contact_instance.email} saved to DB, but Gmail SMTP notification was skipped."
+                )
+            else:
+                email_msg = EmailMessage(
+                    subject=subject_line,
+                    body=body_content,
+                    from_email=from_email,
+                    to=[recipient_email],
+                    reply_to=[contact_instance.email],
+                )
+                email_msg.send(fail_silently=False)
+                email_sent = True
+                logger.info(f"Contact email successfully sent to {recipient_email} for message ID #{contact_instance.id} from {contact_instance.email}")
         except Exception as mail_err:
             logger.error(f"Contact email delivery exception for message ID #{contact_instance.id}: {mail_err}", exc_info=True)
 
@@ -347,6 +358,7 @@ class ContactSubmitView(APIView):
                 "message": "Thank you! Your message has been safely recorded in the database. Notification dispatch had a slight delay, but your message is stored.",
                 "id": contact_instance.id
             }, status=status.HTTP_201_CREATED)
+
 
 
 

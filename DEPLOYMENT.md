@@ -2,6 +2,7 @@
 
 **Project:** Suryakiran P. J. — Futuristic Full-Stack AI Portfolio  
 **Repository:** `https://github.com/skiran-ai/suryakiranpj.git`  
+**Production Domain:** `https://www.suryakiranpj.com`  
 **Architecture:** Netlify (React SPA) + Render (Django REST API + PostgreSQL)
 
 ---
@@ -13,13 +14,14 @@
         │
         ▼
 [ Netlify Edge CDN (React + Vite) ]  ─── HTTPS API Requests ───► [ Render Web Service (Django + WhiteNoise) ]
-  • Custom Domain (e.g. suryakiran.dev)                           • API Domain (e.g. api.suryakiran.dev)
+  • Custom Domain (www.suryakiranpj.com)                          • API Domain (api.suryakiranpj.com / onrender.com)
   • SPA Routing Rewrite (/* -> /index.html)                       • Gunicorn WSGI Worker Server
   • Instant Static Asset Caching                                  │
+                                                                  ├─► [ Render Managed PostgreSQL ]
+                                                                  │     • Persistent Portfolio Data & Messages
                                                                   ▼
-                                                   [ Render Managed PostgreSQL ]
-                                                     • Connection Pooling (conn_max_age=600)
-                                                     • Persistent Portfolio Data & Audit Logs
+                                                       [ Gmail SMTP Service ]
+                                                         • Instant Email Dispatch to suryakiranpjineesh@gmail.com
 ```
 
 ---
@@ -35,126 +37,107 @@
    - **Web Service:** `suryakiran-portfolio-api` (Root directory: `backend`)
 5. Click **Apply**.
 
-### Option B: Manual Service Creation
-1. **Create Database:**
-   - Click **New +** → **PostgreSQL**.
-   - Name: `suryakiran-portfolio-db`
-   - Region: Choose closest to your audience (e.g., Singapore or Frankfurt).
-   - Plan: Free.
-   - Copy the **Internal Database URL**.
-
-2. **Create Web Service:**
-   - Click **New +** → **Web Service**.
-   - Connect repository: `skiran-ai/suryakiranpj`.
-   - **Root Directory:** `backend`
-   - **Environment:** `Python`
-   - **Build Command:** `pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput`
-   - **Start Command:** `gunicorn portfolio_backend.wsgi:application --bind 0.0.0.0:$PORT`
-
 ---
 
 ## Step 2: Backend Environment Variables Configuration
 
 Set the following environment variables in your Render Web Service dashboard (**Environment** tab):
 
+### Core & Security Settings
 | Variable | Recommended Production Value | Description |
 |---|---|---|
-| `DJANGO_SECRET_KEY` | *(Generate a 50+ char random string)* | Cryptographic signing key (NO hardcoded fallback) |
+| `DJANGO_SECRET_KEY` | *(Generate a 50+ char random string)* | Cryptographic signing key |
 | `DJANGO_DEBUG` | `False` | Disables debug mode in production |
-| `DATABASE_URL` | *(Render auto-links from PostgreSQL)* | Connection string for PostgreSQL |
-| `DJANGO_ALLOWED_HOSTS` | `api.yourdomain.com,your-service.onrender.com` | Allowed incoming hostnames (comma-separated) |
-| `CORS_ALLOWED_ORIGINS` | `https://yourdomain.com,https://your-site.netlify.app` | Allowed frontend origins (comma-separated) |
-| `CSRF_TRUSTED_ORIGINS` | `https://yourdomain.com,https://your-site.netlify.app` | Trusted CSRF origins (comma-separated) |
+| `DATABASE_URL` | *(Render auto-links from PostgreSQL)* | PostgreSQL connection string |
+| `DJANGO_ALLOWED_HOSTS` | `suryakiran-portfolio-api.onrender.com,api.suryakiranpj.com,suryakiranpj.com,www.suryakiranpj.com` | Allowed hostnames |
+| `CORS_ALLOWED_ORIGINS` | `https://www.suryakiranpj.com,https://suryakiranpj.com,https://suryakiranpj.netlify.app` | Allowed frontend origins |
+| `CSRF_TRUSTED_ORIGINS` | `https://www.suryakiranpj.com,https://suryakiranpj.com,https://suryakiranpj.netlify.app` | Trusted CSRF origins |
 | `GEMINI_API_KEY` | *(Your Google AI Studio API Key)* | Required for grounded KIRAN AI Assistant |
 | `SECURE_SSL_REDIRECT` | `True` | Enforces HTTPS redirection |
 | `SESSION_COOKIE_SECURE` | `True` | Restricts cookies to HTTPS |
 | `CSRF_COOKIE_SECURE` | `True` | Restricts CSRF tokens to HTTPS |
 
-> [!TIP]
-> Generate a secure `DJANGO_SECRET_KEY` locally:
-> ```bash
-> python -c "import secrets; print(secrets.token_urlsafe(50))"
-> ```
+### 📧 Gmail SMTP Email Configuration (Required for Contact Messages to reach your Gmail)
+| Variable | Value | Description |
+|---|---|---|
+| `EMAIL_BACKEND` | `django.core.mail.backends.smtp.EmailBackend` | Production SMTP Email Backend |
+| `EMAIL_HOST` | `smtp.gmail.com` | Google Gmail SMTP Host |
+| `EMAIL_PORT` | `587` | TLS Port |
+| `EMAIL_USE_TLS` | `True` | Enables Transport Layer Security |
+| `EMAIL_HOST_USER` | `suryakiranpjineesh@gmail.com` | Your Gmail address |
+| `EMAIL_HOST_PASSWORD` | *(16-character Google App Password)* | **Dedicated App Password from Google** (See guide below) |
+| `DEFAULT_FROM_EMAIL` | `suryakiranpjineesh@gmail.com` | From header address |
+| `CONTACT_EMAIL` | `suryakiranpjineesh@gmail.com` | Recipient address where you receive messages |
+
+> [!IMPORTANT]
+> ### 🔑 How to Generate a 16-Character Google App Password:
+> 1. Go to your [Google Account Security Settings](https://myaccount.google.com/security).
+> 2. Ensure **2-Step Verification** is turned **ON**.
+> 3. Search for or navigate to **[App Passwords](https://myaccount.google.com/apppasswords)**.
+> 4. Enter an App Name (e.g. `Portfolio Contact Form`) and click **Create**.
+> 5. Google will display a **16-character password** (e.g., `abcd efgh ijkl mnop`).
+> 6. Copy this 16-character code (without spaces) and paste it as `EMAIL_HOST_PASSWORD` in your Render Environment Variables!
 
 ---
 
-## Step 3: Initialize Database & Admin Superuser
+## Step 3: Initialize Database & Verify Email Dispatch
 
-Once the Render build completes successfully:
+In the Render Dashboard, open your Web Service and click **Shell**:
 
-1. In the Render Dashboard, open the Web Service and click **Shell**.
-2. Create your Django Admin superuser:
+1. Create your Django Admin superuser:
    ```bash
    python manage.py createsuperuser
    ```
-   Follow prompts to enter your username, email, and secure password.
-
-3. Seed initial portfolio data (Idempotent — safe to run on empty DB):
+2. Seed initial portfolio data:
    ```bash
    python manage.py seed_portfolio_data
    ```
-
-4. Verify Admin access:
-   - Navigate to `https://<your-render-service>.onrender.com/admin/`
-   - Log in with the superuser credentials created above.
+3. Test your Gmail SMTP connection:
+   ```bash
+   python manage.py test_email_dispatch
+   ```
+   *(If successful, you will instantly receive a test message in your Gmail inbox!)*
 
 ---
 
-## Step 4: Netlify Frontend Connection
+## Step 4: Netlify Frontend Deployment & Domain Mapping
 
 1. Log in to [Netlify Dashboard](https://app.netlify.com/).
-2. Select your site.
-3. Go to **Site Configuration** → **Environment variables**.
-4. Add the production API base URL variable:
+2. Connect your GitHub repository `skiran-ai/suryakiranpj` (Base: `frontend`, Build: `npm run build`, Publish: `dist`).
+3. Under **Site Configuration** → **Environment variables**, set:
    ```
-   VITE_API_BASE_URL = https://<your-render-service>.onrender.com
+   VITE_API_BASE_URL = https://suryakiran-portfolio-api.onrender.com
    ```
-   *(Or `https://api.yourdomain.com` once custom DNS is mapped).*
-
-5. Trigger a new deploy:
-   - Go to **Deploys** → **Trigger deploy** → **Deploy site**.
-
-6. Verify that frontend API calls successfully reach your Django backend.
+   *(Or `https://api.suryakiranpj.com` if using custom backend subdomain).*
 
 ---
 
-## Step 5: Custom Domain & DNS Mapping (Optional)
+## Step 5: Custom Domain Setup for `www.suryakiranpj.com`
 
-When you are ready to attach a custom domain (e.g. `yourdomain.com`):
+### 1. In Netlify:
+1. Go to **Domain management** → **Add a custom domain**.
+2. Enter `www.suryakiranpj.com` (or `suryakiranpj.com`).
+3. Set `www.suryakiranpj.com` as the primary domain.
 
-### 1. Frontend DNS (Netlify)
-- In Netlify, go to **Domain management** → **Add custom domain** (`yourdomain.com`).
-- Add DNS records at your domain registrar:
-  - **Apex (`@`):** `A` record pointing to Netlify Load Balancer IP (`75.2.60.5`)
-  - **Subdomain (`www`):** `CNAME` pointing to `<your-site-name>.netlify.app`
+### 2. At your Domain Registrar (e.g., GoDaddy, Namecheap, Hostinger, Cloudflare):
+Add the following DNS records:
+- **CNAME Record:**
+  - Host/Name: `www`
+  - Value/Target: `<your-site-name>.netlify.app`
+  - TTL: Automatic / 3600
+- **A Record (Apex):**
+  - Host/Name: `@`
+  - Value/Target: `75.2.60.5` (Netlify's load balancer IP)
+  - TTL: Automatic / 3600
 
-### 2. Backend DNS (Render)
-- In Render Web Service, go to **Settings** → **Custom Domains** → **Add Custom Domain** (`api.yourdomain.com`).
-- Add DNS record at your domain registrar:
-  - **Subdomain (`api`):** `CNAME` pointing to `<your-service-name>.onrender.com`
-
-### 3. Update Environment Variables
-- In Render:
-  ```
-  DJANGO_ALLOWED_HOSTS = api.yourdomain.com,your-service.onrender.com
-  CORS_ALLOWED_ORIGINS = https://yourdomain.com,https://www.yourdomain.com,https://your-site.netlify.app
-  CSRF_TRUSTED_ORIGINS = https://yourdomain.com,https://www.yourdomain.com,https://your-site.netlify.app
-  ```
-- In Netlify:
-  ```
-  VITE_API_BASE_URL = https://api.yourdomain.com
-  ```
+Netlify will automatically provision a free Let's Encrypt SSL certificate once DNS resolves.
 
 ---
 
 ## Step 6: Post-Deployment Verification Checklist
 
 - [ ] `GET https://<api-url>/api/health/` returns `{"status": "healthy", "services": {"database": "ONLINE"}}`
-- [ ] `GET https://<api-url>/api/profile/` returns JSON profile payload
-- [ ] `POST https://<api-url>/api/ai/chat/` with `{"message": "skills"}` returns grounded AI response
-- [ ] `https://<frontend-url>/` loads Three.js 3D background without console errors
-- [ ] Command Palette (`Ctrl + K`) opens and navigates sections smoothly
-- [ ] Project X-Ray architecture modal opens and displays system specifications
+- [ ] Submit contact form on `https://www.suryakiranpj.com/#contact` → verify notification arrives in `suryakiranpjineesh@gmail.com`
+- [ ] Message record appears in Admin Dashboard at `https://www.suryakiranpj.com/admin/messages`
 - [ ] Direct URL refresh on `/cv` or `/projects` loads correctly (no 404)
-- [ ] Contact form submission saves to database and appears in `/admin/`
-- [ ] Switching SiteSetting to `PRIVATE` in admin shields public endpoints with 503 status
+- [ ] AI Assistant (KIRAN) responds to questions accurately

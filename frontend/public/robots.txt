@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://suryakiranpj.com/sitemap.xml
+Sitemap: https://www.suryakiranpj.com/sitemap.xml
