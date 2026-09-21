@@ -1,81 +1,144 @@
 import React, { lazy, Suspense } from 'react';
-import { ArrowRight, FileText, Command } from 'lucide-react';
+import AntigravityQuantumSphere from './AntigravityQuantumSphere';
 
 const ThreeHeroCanvas = lazy(() => import('./ThreeHeroCanvas'));
 
 export default function Hero({ onOpenCV, onOpenCommandPalette, isReducedMotion }) {
   return (
-    <section id="hero" className="position-relative min-vh-100 d-flex align-items-center justify-content-center overflow-hidden pt-5">
-      {/* 3D WebGL Canvas Background with graceful Suspense fallback */}
-      <Suspense
-        fallback={
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100 overflow-hidden pointer-events-none"
-            style={{
-              background: 'radial-gradient(circle at 50% 30%, rgba(56, 189, 248, 0.15) 0%, rgba(10, 12, 22, 1) 70%)',
-              zIndex: 0
-            }}
-          />
-        }
-      >
+    <section
+      id="hero"
+      className="position-relative w-100 min-vh-100 d-flex flex-column justify-content-center overflow-hidden"
+      style={{ paddingTop: '100px', paddingBottom: '60px', background: '#08080c' }}
+    >
+      {/* Ambient Zero-G Photonic Glows (Layer 0) */}
+      <div className="quantum-field-ambient-cyan" style={{ top: '-10%', left: '50%', transform: 'translateX(-50%)' }} />
+      <div className="quantum-field-ambient-violet" style={{ top: '40%', left: '-15%' }} />
+
+      {/* Ambient WebGL Particle System Background */}
+      <Suspense fallback={null}>
         <ThreeHeroCanvas isReducedMotion={isReducedMotion} />
       </Suspense>
 
-      <div className="container position-relative z-1 text-center py-5">
-        <div className="max-w-900 mx-auto">
-          {/* Status Badge */}
-          <div className="d-inline-flex align-items-center gap-2 badge-brand mb-4 py-2 px-4 rounded-pill shadow-lg animate-fade-in font-code">
-            <span className="rounded-circle bg-emerald-400 d-inline-block pulse-animation" style={{ width: '8px', height: '8px' }}></span>
-            <span className="text-uppercase tracking-wider">Available for Full-time Roles & Remote Projects</span>
+      <div className="container-fluid position-relative z-1" style={{ maxWidth: '1440px', margin: '0 auto', padding: '0 1.5rem' }}>
+        
+        {/* Top Metadata Bar */}
+        <div className="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pt-3">
+          <div
+            className="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill"
+            style={{
+              background: 'rgba(27, 27, 32, 0.85)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(0, 240, 255, 0.25)',
+            }}
+          >
+            <span
+              className="rounded-circle animate-ag-pulse"
+              style={{ width: '8px', height: '8px', backgroundColor: '#00f0ff', display: 'inline-block' }}
+            ></span>
+            <span className="font-label-caps" style={{ color: '#7df4ff', letterSpacing: '0.12em' }}>
+              PROTOTYPE 2027 // ZERO-G COMPUTING ARCHITECT
+            </span>
           </div>
 
-          {/* Main Title Identity Reveal */}
-          <h1 className="display-2 font-bold mb-3 tracking-tight text-white hero-title">
-            SURYAKIRAN P. J.
-          </h1>
-
-          <h2 className="display-6 font-semibold mb-4 text-gradient font-code">
-            PYTHON FULL STACK DEVELOPER
-          </h2>
-
-          <p className="lead text-secondary mb-5 max-w-750 mx-auto" style={{ fontSize: '1.2rem', lineHeight: '1.7' }}>
-            Building production-grade full-stack web platforms with <strong className="text-primary">Python, Django REST Framework</strong>, and high-performance <strong className="text-primary">React.js</strong> user interfaces.
-          </p>
-
-          {/* Action CTAs */}
-          <div className="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-5 font-code">
-            <a href="#projects" className="btn btn-brand btn-lg px-4 py-3 rounded-pill d-flex align-items-center gap-2 shadow-lg">
-              <span>Explore Projects</span>
-              <ArrowRight size={18} />
-            </a>
-
-            <button onClick={onOpenCV} className="btn btn-outline-brand btn-lg px-4 py-3 rounded-pill d-flex align-items-center gap-2">
-              <FileText size={18} />
-              <span>View & Download CV</span>
-            </button>
-
-            <button onClick={onOpenCommandPalette} className="btn btn-outline-brand btn-lg px-3 py-3 rounded-circle" title="Open Command Palette (Ctrl+K)">
-              <Command size={20} />
-            </button>
+          <div className="d-flex align-items-center gap-3 font-label-hud text-secondary" style={{ fontSize: '11px' }}>
+            <span className="d-flex align-items-center gap-1">
+              <span className="material-symbols-outlined" style={{ color: '#00f0ff', fontSize: '14px' }}>satellite_alt</span>
+              ORBIT: LEO-G4 // NODE 19
+            </span>
+            <span className="d-none d-sm-inline-block text-muted">HASH: 0x9F41C..88EA</span>
+            <span style={{ color: '#6ffbbe', fontWeight: 600 }}>TENSOR: ONLINE (4096 TFLOP)</span>
           </div>
+        </div>
 
-          {/* Key Metrics / Highlights Grid */}
-          <div className="row gy-3 justify-content-center max-w-900 mx-auto font-code">
-            {[
-              { label: "Frontend Stack", val: "React.js & JS ES6+", desc: "Stateful Component Architecture" },
-              { label: "Backend Core", val: "Python & Django", desc: "RESTful APIs & Database ORM" },
-              { label: "API Engineering", val: "Django REST Framework", desc: "Throttling, Auth & JSON Specs" },
-              { label: "Full Stack Vision", val: "End-to-End Systems", desc: "Decoupled Scalable Architecture" }
-            ].map((stat, idx) => (
-              <div key={idx} className="col-6 col-md-3">
-                <div className="glass-card p-3 h-100 text-center hover-glow">
-                  <div className="small text-muted mb-1" style={{ fontSize: '0.75rem' }}>{stat.label}</div>
-                  <div className="fw-bold text-cyan-400 mb-1" style={{ fontSize: '0.95rem' }}>{stat.val}</div>
-                  <div className="small text-secondary" style={{ fontSize: '0.7rem' }}>{stat.desc}</div>
+        {/* Hero Title & Positioning Grid */}
+        <div className="row align-items-center g-4 g-lg-5">
+          
+          {/* Left Column: Mission Brief & Architectural CTAs */}
+          <div className="col-lg-7 d-flex flex-column gap-3 z-1">
+            <div className="d-flex align-items-center gap-2" style={{ color: '#d0bcff' }}>
+              <span className="font-label-hud" style={{ letterSpacing: '0.16em' }}>
+                [ PYTHON FULL-STACK // NEURAL TENSORS ]
+              </span>
+              <span style={{ width: '40px', height: '1px', backgroundColor: 'rgba(139, 92, 246, 0.5)' }}></span>
+            </div>
+
+            <h1 className="font-display-hero text-uppercase text-light m-0">
+              SURYA KIRAN{' '}
+              <span
+                style={{
+                  background: 'linear-gradient(90deg, #00f0ff 0%, #7df4ff 50%, #d0bcff 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                P J
+              </span>
+            </h1>
+
+            <p className="font-body-lg text-secondary m-0" style={{ maxWidth: '640px', color: '#b9cacb' }}>
+              Architecting high-dimensional Python backends, zero-overhead asynchronous mesh runtimes, and holographic WebGPU spatial interfaces calibrated for zero-gravity telemetry.
+            </p>
+
+            {/* Command Reticle CTA Matrix */}
+            <div className="d-flex flex-wrap align-items-center gap-3 pt-2">
+              <a href="#projects" className="btn-quantum-primary">
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>hub</span>
+                Explore Neural Architecture
+              </a>
+
+              <a href="#dossier" className="btn-cyber-ghost">
+                <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>download</span>
+                Antigravity Spec Dossier [PDF]
+              </a>
+
+              <a href="#terminal-section" className="btn-cyber-ghost">
+                <span className="material-symbols-outlined" style={{ fontSize: '15px' }}>terminal</span>
+                [ RUN_EXEC ]
+              </a>
+            </div>
+
+            {/* Telemetry Chips */}
+            <div className="row g-2 pt-3" style={{ maxWidth: '560px' }}>
+              <div className="col-4">
+                <div
+                  className="p-2 rounded d-flex flex-column"
+                  style={{ background: 'rgba(14, 14, 18, 0.85)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.06)' }}
+                >
+                  <span className="font-label-hud text-muted">ASYNC RUNTIME</span>
+                  <span className="font-headline-sm" style={{ color: '#7df4ff', marginTop: '2px' }}>3.14t</span>
+                  <span className="font-label-hud" style={{ color: '#65f2b5', fontSize: '9px' }}>GIL-FREE / NATIVE</span>
                 </div>
               </div>
-            ))}
+
+              <div className="col-4">
+                <div
+                  className="p-2 rounded d-flex flex-column"
+                  style={{ background: 'rgba(14, 14, 18, 0.85)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.06)' }}
+                >
+                  <span className="font-label-hud text-muted">PIPELINE LATENCY</span>
+                  <span className="font-headline-sm" style={{ color: '#6ffbbe', marginTop: '2px' }}>1.8ms</span>
+                  <span className="font-label-hud text-muted" style={{ fontSize: '9px' }}>p99 THROUGHPUT</span>
+                </div>
+              </div>
+
+              <div className="col-4">
+                <div
+                  className="p-2 rounded d-flex flex-column"
+                  style={{ background: 'rgba(14, 14, 18, 0.85)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.06)' }}
+                >
+                  <span className="font-label-hud text-muted">GRAVITY SCALAR</span>
+                  <span className="font-headline-sm" style={{ color: '#e9ddff', marginTop: '2px' }}>0.00g</span>
+                  <span className="font-label-hud" style={{ color: '#d0bcff', fontSize: '9px' }}>ACTIVE ANTIGRAV</span>
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Right Column: Holographic Spherical HUD Viewport */}
+          <div className="col-lg-5 position-relative">
+            <AntigravityQuantumSphere isReducedMotion={isReducedMotion} />
+          </div>
+
         </div>
       </div>
     </section>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {"darkMode":"class","theme":{"extend":{"colors":{"on-tertiary":"#003824","tertiary-container":"#65f2b5","on-surface":"#e4e1e8","on-tertiary-container":"#006d4a","on-primary-fixed":"#002022","error":"#ffb4ab","on-primary-fixed-variant":"#004f54","on-secondary-fixed":"#23005c","surface-container-lowest":"#0e0e12","on-error-container":"#ffdad6","tertiary-fixed":"#6ffbbe","secondary-container":"#571bc1","surface-dim":"#131317","inverse-primary":"#006970","surface":"#131317","on-primary":"#00363a","secondary-fixed-dim":"#d0bcff","on-tertiary-fixed":"#002113","on-secondary":"#3c0091","surface-container":"#1f1f24","surface-tint":"#00dbe9","on-secondary-container":"#c4abff","on-surface-variant":"#b9cacb","tertiary-fixed-dim":"#4edea3","primary-fixed-dim":"#00dbe9","primary-fixed":"#7df4ff","on-background":"#e4e1e8","outline-variant":"#3b494b","primary":"#dbfcff","inverse-surface":"#e4e1e8","surface-container-low":"#1b1b20","surface-container-highest":"#353439","background":"#131317","outline":"#849495","secondary":"#d0bcff","surface-container-high":"#2a292e","on-error":"#690005","error-container":"#93000a","surface-variant":"#353439","tertiary":"#d8ffe7","on-tertiary-fixed-variant":"#005236","surface-bright":"#39393e","primary-container":"#00f0ff","on-primary-container":"#006970","secondary-fixed":"#e9ddff","on-secondary-fixed-variant":"#5516be","inverse-on-surface":"#303035"},"borderRadius":{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},"spacing":{"space-3xl":"6rem","margin-lg":"5rem","space-xl":"2.5rem","space-sm":"0.5rem","gutter":"1.5rem","gutter-lg":"2.5rem","space-xs":"0.25rem","space-2xl":"4rem","space-md":"1rem","space-lg":"1.5rem","margin-md":"3rem","margin":"1.5rem"},"fontFamily":{"headline-lg-mobile":["Space Grotesk"],"body-sm":["Inter"],"body-lg":["Inter"],"display-hero":["Space Grotesk"],"headline-md":["Space Grotesk"],"label-hud":["JetBrains Mono"],"label-caps":["JetBrains Mono"],"display-hero-mobile":["Space Grotesk"],"code-terminal":["JetBrains Mono"],"headline-lg":["Space Grotesk"],"body-md":["Inter"],"headline-sm":["Space Grotesk"]},"fontSize":{"headline-lg-mobile":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","letterSpacing":"0em","fontWeight":"400"}],"body-lg":["18px",{"lineHeight":"30px","letterSpacing":"-0.01em","fontWeight":"400"}],"display-hero":["72px",{"lineHeight":"80px","letterSpacing":"-0.04em","fontWeight":"700"}],"headline-md":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-hud":["10px",{"lineHeight":"14px","letterSpacing":"0.08em","fontWeight":"500"}],"label-caps":["11px",{"lineHeight":"16px","letterSpacing":"0.14em","fontWeight":"600"}],"display-hero-mobile":["40px",{"lineHeight":"48px","letterSpacing":"-0.03em","fontWeight":"700"}],"code-terminal":["13px",{"lineHeight":"22px","letterSpacing":"0em","fontWeight":"400"}],"headline-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.03em","fontWeight":"600"}],"body-md":["15px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"headline-sm":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"500"}]}}};</script></head><body class="bg-background font-body-md text-on-surface selection:bg-primary-container selection:text-on-primary-container"><header class="fixed top-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-[1440px] mx-auto px-margin md:px-gutter-lg flex items-center justify-between gap-space-md"><div class="flex items-center gap-space-lg"><a class="flex flex-col group" href="#"><span class="font-headline-sm text-headline-sm uppercase tracking-wider text-primary group-hover:text-primary-container transition-colors">SURYA.KIRAN</span><span class="font-label-caps text-label-caps text-on-surface-variant tracking-widest">ANTIGRAVITY // 2027</span></a><div class="hidden xl:flex items-center gap-space-md pl-space-lg"><div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-space-xs rounded-DEFAULT"><span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span><span class="font-label-hud text-label-hud text-on-surface-variant uppercase">SYS: <span class="text-tertiary-container">ONLINE</span></span></div><div class="hidden 2xl:flex items-center gap-space-xs bg-surface-container-low px-space-sm py-space-xs rounded-DEFAULT"><span class="font-label-hud text-label-hud text-on-surface-variant uppercase">G-FIELD: <span class="text-primary-fixed">0.00g</span></span></div><div class="hidden 2xl:flex items-center gap-space-xs bg-surface-container-low px-space-sm py-space-xs rounded-DEFAULT"><span class="font-label-hud text-label-hud text-on-surface-variant uppercase">LATENCY: <span class="text-primary-fixed-dim">4ms</span></span></div></div></div><nav class="hidden lg:flex items-center gap-space-xs" data-active-classes="bg-surface-container text-primary font-semibold"><a aria-current="page" class="px-space-md py-space-sm uppercase transition-all rounded-DEFAULT bg-surface-container text-primary font-semibold" data-path="core-architecture" href="#">Core Architecture</a><a class="px-space-md py-space-sm font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-DEFAULT" data-path="python-ecosystem" href="#">Python Ecosystem</a><a class="px-space-md py-space-sm font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-DEFAULT" data-path="interactive-matrix" href="#">Interactive Matrix</a><a class="px-space-md py-space-sm font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-DEFAULT" data-path="antigravity-specs" href="#">Antigravity Specs</a><a class="px-space-md py-space-sm font-label-caps text-label-caps uppercase text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all rounded-DEFAULT" data-path="contact-terminal" href="#">Contact/Terminal</a></nav><div class="flex items-center gap-space-md"><button class="hidden sm:flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-sm rounded-DEFAULT text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all" type="button"><span class="font-label-hud text-label-hud">CMD+K</span></button><a class="hidden sm:inline-flex items-center justify-center px-space-md py-space-sm rounded-DEFAULT bg-primary-container text-on-primary-container font-label-caps text-label-caps uppercase hover:bg-primary-fixed hover:text-on-primary-fixed transition-all" data-path="contact-terminal" href="#">Initialize Transmission</a><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOhGBGOsOHEzMQb4wCdBdv8OyucBL458E-tcBSewe4PevrqDhPaQEiKL7SO2XjuPB0wfrtRxUs7Ai5cpUmyHIh2xMLL_HOcgAafkTCBdtUZYwpHULx2sqnmyTXhqDCbXYo_yGp-_bAzZVBLYS2TbPrDhCLLb12cy40EFT1DNCxdNC2UbPRdWV-E_-toqto0tL06OtjwD8-hfUeTHkQBjrBioTnwVEUphCZj3bP32NYyVcSIPzI_TMZ"/></div></div></header><main class="w-full pt-20 bg-background min-h-screen"><div class="flex flex-col w-full relative overflow-hidden">
+<!-- Ambient Quantum Field Glows (Layer 0) -->
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-primary-container/10 rounded-full blur-[140px] pointer-events-none -z-10"></div>
+<div class="absolute top-[800px] -left-48 w-[600px] h-[600px] bg-secondary-container/20 rounded-full blur-[160px] pointer-events-none -z-10"></div>
+<div class="absolute top-[1800px] -right-48 w-[700px] h-[700px] bg-primary/5 rounded-full blur-[180px] pointer-events-none -z-10"></div>
+<!-- SECTION 1: HERO / NEURAL SPHERICAL HUD -->
+<section class="relative w-full max-w-[1440px] mx-auto px-margin md:px-gutter-lg pb-space-3xl">
+<!-- Top Metadata Bar -->
+<div class="flex flex-wrap items-center justify-between gap-space-md pt-space-lg mb-space-xl">
+<div class="inline-flex items-center gap-space-sm px-space-md py-space-xs rounded-full bg-surface-container-low/80 backdrop-blur-md">
+<span class="w-2 h-2 rounded-full bg-tertiary-container animate-ping"></span>
+<span class="font-label-caps text-label-caps uppercase tracking-widest text-primary-fixed">PROTOTYPE 2027 // ZERO-G COMPUTING ARCHITECT</span>
+</div>
+<div class="flex items-center gap-space-lg font-label-hud text-label-hud text-on-surface-variant">
+<span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[14px] text-primary-container">satellite_alt</span> ORBIT: LEO-G4 // NODE 19</span>
+<span class="hidden sm:inline-block">HASH: 0x9F41C..88EA</span>
+<span class="text-tertiary-fixed font-semibold">TENSOR: ONLINE (4096 TFLOP)</span>
+</div>
+</div>
+<!-- Hero Title & Positioning Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center">
+<div class="lg:col-span-7 flex flex-col gap-space-md z-10">
+<div class="flex items-center gap-space-sm text-secondary">
+<span class="font-label-hud text-label-hud uppercase tracking-widest">[ PYTHON FULL-STACK // NEURAL TENSORS ]</span>
+<span class="h-[1px] w-12 bg-secondary/40"></span>
+</div>
+<h1 class="font-display-hero text-headline-lg md:text-display-hero uppercase tracking-tight text-primary leading-none">
+          SURYA KIRAN <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container via-primary-fixed to-secondary-fixed">P J</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-space-xs">
+          Architecting high-dimensional Python backends, zero-overhead asynchronous mesh runtimes, and holographic WebGPU spatial interfaces calibrated for zero-gravity telemetry.
+        </p>
+<!-- Command Reticle CTA Matrix -->
+<div class="flex flex-wrap items-center gap-space-md pt-space-lg">
+<a class="inline-flex items-center gap-space-sm px-space-xl py-space-md rounded-DEFAULT bg-primary-container text-on-primary-container font-label-caps text-label-caps uppercase tracking-wider shadow-[0_0_30px_rgba(0,240,255,0.35)] hover:shadow-[0_0_45px_rgba(0,240,255,0.6)] hover:bg-primary-fixed hover:text-on-primary-fixed transition-all" href="#projects">
+<span class="material-symbols-outlined text-[16px]">hub</span>
+            Explore Neural Architecture
+          </a>
+<a class="inline-flex items-center gap-space-sm px-space-lg py-space-md rounded-DEFAULT bg-surface-container-high text-primary font-label-caps text-label-caps uppercase tracking-wider hover:bg-surface-container-highest hover:text-primary-container transition-all" href="#dossier">
+<span class="material-symbols-outlined text-[16px]">download</span>
+            Antigravity Spec Dossier [PDF]
+          </a>
+<a class="inline-flex items-center gap-space-xs px-space-md py-space-md rounded-DEFAULT bg-surface-container-low text-on-surface-variant hover:text-primary font-label-hud text-label-hud uppercase transition-all" href="#terminal-section">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+            [ RUN_EXEC ]
+          </a>
+</div>
+<!-- Telemetry Chips -->
+<div class="grid grid-cols-3 gap-space-md pt-space-lg max-w-lg">
+<div class="flex flex-col p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 backdrop-blur-md">
+<span class="font-label-hud text-label-hud text-on-surface-variant uppercase">ASYNC RUNTIME</span>
+<span class="font-headline-sm text-headline-sm text-primary-fixed mt-space-xs">3.14t</span>
+<span class="font-label-hud text-[9px] text-tertiary-container">GIL-FREE / NATIVE</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 backdrop-blur-md">
+<span class="font-label-hud text-label-hud text-on-surface-variant uppercase">PIPELINE LATENCY</span>
+<span class="font-headline-sm text-headline-sm text-tertiary-fixed mt-space-xs">1.8ms</span>
+<span class="font-label-hud text-[9px] text-on-surface-variant">p99 HIGH-THROUGHPUT</span>
+</div>
+<div class="flex flex-col p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 backdrop-blur-md">
+<span class="font-label-hud text-label-hud text-on-surface-variant uppercase">GRAVITY SCALAR</span>
+<span class="font-headline-sm text-headline-sm text-secondary-fixed mt-space-xs">0.00g</span>
+<span class="font-label-hud text-[9px] text-secondary">ACTIVE ANTIGRAV</span>
+</div>
+</div>
+</div>
+<!-- Holographic Spherical HUD Viewport (Featured Image Inspiration) -->
+<div class="lg:col-span-5 relative mt-space-xl lg:mt-0">
+<div class="relative w-full aspect-square rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_0_60px_rgba(0,240,255,0.15)] group">
+<!-- Holographic Asset Viewport -->
+<img alt="Antigravity Quantum Sphere Telemetry Console" class="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOhGBGOsOHEzMQb4wCdBdv8OyucBL458E-tcBSewe4PevrqDhPaQEiKL7SO2XjuPB0wfrtRxUs7Ai5cpUmyHIh2xMLL_HOcgAafkTCBdtUZYwpHULx2sqnmyTXhqDCbXYo_yGp-_bAzZVBLYS2TbPrDhCLLb12cy40EFT1DNCxdNC2UbPRdWV-E_-toqto0tL06OtjwD8-hfUeTHkQBjrBioTnwVEUphCZj3bP32NYyVcSIPzI_TMZ"/>
+<!-- Glass HUD HUD Glassmorphism Layer -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-surface-container-lowest/40 pointer-events-none"></div>
+<!-- Futuristic HUD Reticles & Corner Brackets -->
+<div class="absolute top-4 left-4 flex flex-col font-label-hud text-label-hud text-primary-container bg-surface-container-lowest/70 backdrop-blur-md p-space-xs rounded-DEFAULT">
+<span>SYS_VIEW // HOLO_SPHERE_01</span>
+<span class="text-on-surface-variant text-[9px]">FPS: 120.0 | BUFFER: QUAD</span>
+</div>
+<div class="absolute top-4 right-4 flex items-center gap-space-xs font-label-hud text-label-hud text-tertiary-container bg-surface-container-lowest/70 backdrop-blur-md px-space-sm py-space-xs rounded-DEFAULT">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container animate-pulse"></span>
+            ORBIT_VEC: [0.94, 0.12, -0.44]
+          </div>
+<div class="absolute bottom-4 left-4 right-4 flex items-center justify-between font-label-hud text-label-hud text-on-surface bg-surface-container-lowest/80 backdrop-blur-xl p-space-sm rounded-DEFAULT">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[14px] text-primary-fixed">memory</span>
+<span>CORE: PYTHON 3.14t ASYNC MESH</span>
+</div>
+<span class="text-primary-container font-code-terminal">v2027.04</span>
+</div>
+<!-- Corner Crosshairs (+) -->
+<span class="absolute top-2 left-2 text-primary/40 font-code-terminal text-xs select-none">+</span>
+<span class="absolute top-2 right-2 text-primary/40 font-code-terminal text-xs select-none">+</span>
+<span class="absolute bottom-2 left-2 text-primary/40 font-code-terminal text-xs select-none">+</span>
+<span class="absolute bottom-2 right-2 text-primary/40 font-code-terminal text-xs select-none">+</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: PYTHON FULL STACK CAPABILITY MATRIX (BENTO GRID) -->
+<section class="w-full bg-surface-container-low/50 py-space-3xl relative">
+<div class="max-w-[1440px] mx-auto px-margin md:px-gutter-lg">
+<!-- Section Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-space-2xl gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs font-label-hud text-label-hud text-secondary uppercase mb-space-xs">
+<span>// SECTION 02</span>
+<span>•</span>
+<span>CAPABILITY DOMAINS</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface tracking-tight">
+            Python Full Stack <span class="text-primary-container">Matrix</span> (2027)
+          </h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-md">
+          High-throughput architectural pillars spanning asynchronous distributed microservices, WebGPU viewports, autonomous multi-agent clusters, and orbital cloud deployments.
+        </p>
+</div>
+<!-- Bento Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter-lg">
+<!-- Pillar 1: Backend Core -->
+<div class="flex flex-col justify-between p-space-xl rounded-xl bg-surface-container/70 backdrop-blur-md hover:bg-surface-container-high transition-all group">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-lg">
+<div class="w-10 h-10 rounded-DEFAULT bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[24px]">terminal</span>
+</div>
+<span class="font-label-hud text-label-hud text-on-surface-variant">01 // CLUSTER</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-space-xs group-hover:text-primary-container transition-colors">Backend Core &amp; Vector Mesh</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-lg">
+              Ultra-low latency asynchronous infrastructure engineered for high-throughput streaming and high-dimensional semantic search.
+            </p>
+</div>
+<div class="flex flex-col gap-space-xs pt-space-md bg-surface-container-lowest/50 p-space-sm rounded-DEFAULT">
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">FastAPI / Async Python</span>
+<span class="text-tertiary-container font-label-hud">99.9%</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">Milvus &amp; Qdrant Vector DB</span>
+<span class="text-primary-fixed font-label-hud">8M VEC</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">gRPC / Cap'n Proto Pipelines</span>
+<span class="text-secondary font-label-hud">&lt;0.8ms</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">Django Microservices</span>
+<span class="text-on-surface-variant font-label-hud">ENTERPRISE</span>
+</div>
+</div>
+</div>
+<!-- Pillar 2: Frontend & Spatial UI -->
+<div class="flex flex-col justify-between p-space-xl rounded-xl bg-surface-container/70 backdrop-blur-md hover:bg-surface-container-high transition-all group">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-lg">
+<div class="w-10 h-10 rounded-DEFAULT bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[24px]">view_in_ar</span>
+</div>
+<span class="font-label-hud text-label-hud text-on-surface-variant">02 // SPATIAL</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-space-xs group-hover:text-secondary transition-colors">Frontend &amp; 3D Spatial UI</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-lg">
+              Reactive client architectures paired with custom WebGPU shaders and physics-based tactile glassmorphic telemetry consoles.
+            </p>
+</div>
+<div class="flex flex-col gap-space-xs pt-space-md bg-surface-container-lowest/50 p-space-sm rounded-DEFAULT">
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">React 19 / Next.js Spatial</span>
+<span class="text-primary-fixed font-label-hud">CONCURRENT</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">Three.js / WebGPU Shaders</span>
+<span class="text-tertiary-container font-label-hud">120 FPS</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">Tailwind CSS Architecture</span>
+<span class="text-secondary font-label-hud">ZERO-RUNTIME</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">Antigravity HUD Controls</span>
+<span class="text-on-surface-variant font-label-hud">GLASS v4</span>
+</div>
+</div>
+</div>
+<!-- Pillar 3: Autonomous Agents & ML -->
+<div class="flex flex-col justify-between p-space-xl rounded-xl bg-surface-container/70 backdrop-blur-md hover:bg-surface-container-high transition-all group">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-lg">
+<div class="w-10 h-10 rounded-DEFAULT bg-tertiary-container/10 flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined text-[24px]">psychology</span>
+</div>
+<span class="font-label-hud text-label-hud text-on-surface-variant">03 // COGNITION</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-space-xs group-hover:text-tertiary-container transition-colors">Autonomous Agents &amp; ML</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-lg">
+              Decentralized multi-agent orchestrations and low-rank tensor pipelines delivering instantaneous real-world reasoning.
+            </p>
+</div>
+<div class="flex flex-col gap-space-xs pt-space-md bg-surface-container-lowest/50 p-space-sm rounded-DEFAULT">
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">PyTorch Tensor Modeling</span>
+<span class="text-tertiary-fixed font-label-hud">TORCH 2.6+</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">LangGraph Multi-Agent Nodes</span>
+<span class="text-primary-container font-label-hud">STATEGRAPH</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">Quantized LLM Inferences</span>
+<span class="text-secondary font-label-hud">4-BIT / EXL2</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">ONNX Runtime Engine</span>
+<span class="text-on-surface-variant font-label-hud">ZERO-LATENCY</span>
+</div>
+</div>
+</div>
+<!-- Pillar 4: Zero-G Cloud Infrastructure -->
+<div class="flex flex-col justify-between p-space-xl rounded-xl bg-surface-container/70 backdrop-blur-md hover:bg-surface-container-high transition-all group">
+<div class="flex flex-col">
+<div class="flex items-center justify-between mb-space-lg">
+<div class="w-10 h-10 rounded-DEFAULT bg-primary-fixed-dim/20 flex items-center justify-center text-primary-fixed">
+<span class="material-symbols-outlined text-[24px]">cloud_sync</span>
+</div>
+<span class="font-label-hud text-label-hud text-on-surface-variant">04 // INFRA</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-space-xs group-hover:text-primary-fixed transition-colors">Zero-G Cloud &amp; Infra</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-lg">
+              Distributed Kubernetes constellations and GPU-accelerated serverless clusters provisioned with immutable declarative code.
+            </p>
+</div>
+<div class="flex flex-col gap-space-xs pt-space-md bg-surface-container-lowest/50 p-space-sm rounded-DEFAULT">
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">Docker &amp; K8s Helm Mesh</span>
+<span class="text-tertiary-container font-label-hud">AUTOMATED</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">AWS Lambda GPU Clusters</span>
+<span class="text-primary-container font-label-hud">SCALE-TO-0</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">Terraform State Sync</span>
+<span class="text-secondary font-label-hud">IaC SECURE</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-terminal">
+<span class="text-on-surface">eBPF Network Observability</span>
+<span class="text-on-surface-variant font-label-hud">REALTIME</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Performance Sparklines HUD Strip -->
+<div class="mt-space-xl p-space-md rounded-xl bg-surface-container-lowest/90 backdrop-blur-md flex flex-wrap items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<span class="material-symbols-outlined text-primary-container">speed</span>
+<div class="flex flex-col">
+<span class="font-label-caps text-label-caps uppercase text-primary">Live Cluster Throughput Telemetry</span>
+<span class="font-label-hud text-label-hud text-on-surface-variant">AGGREGATE DATA INGESTION ACROSS 128 HYPER-NODES</span>
+</div>
+</div>
+<!-- Inline SVG Sparkline Chart -->
+<div class="flex items-center gap-space-lg">
+<div class="w-48 h-8 flex items-center">
+<svg class="w-full h-full text-primary-container overflow-visible" fill="none" viewbox="0 0 100 24">
+<path d="M0,18 L12,14 L24,19 L36,8 L48,12 L60,4 L72,9 L84,2 L100,5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M0,18 L12,14 L24,19 L36,8 L48,12 L60,4 L72,9 L84,2 L100,5 L100,24 L0,24 Z" fill="currentColor" fill-opacity="0.1"></path>
+</svg>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-headline-sm text-headline-sm text-tertiary-fixed">2,488,912</span>
+<span class="font-label-hud text-label-hud text-on-surface-variant">REQ / SEC RECORDED</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: FLAGSHIP FEATURED PROJECTS -->
+<section class="w-full max-w-[1440px] mx-auto px-margin md:px-gutter-lg py-space-3xl relative" id="projects">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-space-2xl gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs font-label-hud text-label-hud text-primary-fixed-dim uppercase mb-space-xs">
+<span>// SECTION 03</span>
+<span>•</span>
+<span>RESEARCH &amp; DEPLOYMENT ARCHITECTURE</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface tracking-tight">
+          Flagship <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-container to-secondary">Autonomous Systems</span>
+</h2>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">STATUS: VERIFIED IN ZERO-G PRODUCTION</span>
+</div>
+<!-- Project Matrix Cards -->
+<div class="flex flex-col gap-space-2xl">
+<!-- Project 1: AETHER-PY -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center p-space-xl rounded-xl bg-surface-container/60 backdrop-blur-md group hover:bg-surface-container transition-all">
+<div class="lg:col-span-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-space-sm mb-space-md">
+<span class="px-space-sm py-space-xs rounded-DEFAULT bg-primary-container/10 font-label-hud text-label-hud uppercase text-primary-container">PROJ_ID // 01</span>
+<span class="font-label-hud text-label-hud text-tertiary-container">2.4M OPS/SEC</span>
+</div>
+<h3 class="font-headline-md text-headline-md uppercase text-primary group-hover:text-primary-container transition-colors">
+              AETHER-PY: Distributed Asynchronous Physics &amp; Vector Engine
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-md">
+              Massively parallel orbital gravity simulation engine. Employs Python 3.13+ GIL-free multithreading, WebGPU compute kernels, and clustered Redis vector state trees to calculate 20,000 interacting celestial bodies in real time.
+            </p>
+</div>
+<div class="flex flex-wrap gap-space-xs mt-space-lg">
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-primary-fixed">Python 3.14t</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-primary-fixed">WebGPU Compute</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-primary-fixed">Redis Cluster</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-secondary">SIMD Vectors</span>
+</div>
+<div class="flex items-center gap-space-md mt-space-xl">
+<button class="px-space-lg py-space-sm rounded-DEFAULT bg-primary-container text-on-primary-container font-label-caps text-label-caps uppercase hover:bg-primary-fixed transition-all">
+              Inspect Architecture
+            </button>
+<button class="px-space-md py-space-sm rounded-DEFAULT bg-surface-container-low text-on-surface hover:text-primary font-label-hud text-label-hud uppercase transition-all">
+              GitHub Kernel [v2.4]
+            </button>
+</div>
+</div>
+<div class="lg:col-span-7 relative rounded-xl overflow-hidden bg-surface-container-lowest aspect-video shadow-xl">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Futuristic cybernetic telemetry console displaying a glowing cyan and purple particle simulation of zero-gravity orbital mechanics, with 3D wireframe physics coordinates and Python execution telemetry graphs." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-6H9sxYtSdPxA8DPcrizxJqR53A_koVE0h3syA2pC-gotEV9yge2qB2OSI48G8l5bciryXvBdTatxAw050hJ1XJVyMrkpp2M57tqAJ2k5Eq3_rEOpOPRSjW1-1-dQK_PitMEiFOBn_HfAWhylL11LumIjRVoRRPI-PY6PUmqEs65S_GE9XiPpng198_MVd9RhlUtcTUbFAyPL5fqUvOoqZLTHjVITnOczPkYFKq5Jl4TE8SQBGy1i"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+<!-- Micro HUD overlay -->
+<div class="absolute bottom-4 left-4 right-4 flex items-center justify-between p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 backdrop-blur-md">
+<div class="flex items-center gap-space-sm font-label-hud text-label-hud text-on-surface-variant">
+<span class="text-tertiary-fixed font-bold">STATE: STABLE</span>
+<span>PARTICLES: 20,480</span>
+</div>
+<span class="font-code-terminal text-label-hud text-primary-container">GPU_COMPUTE: 98.4%</span>
+</div>
+</div>
+</div>
+<!-- Project 2: CHRONOS HUD -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center p-space-xl rounded-xl bg-surface-container/60 backdrop-blur-md group hover:bg-surface-container transition-all">
+<div class="lg:col-span-7 order-2 lg:order-1 relative rounded-xl overflow-hidden bg-surface-container-lowest aspect-video shadow-xl">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Holographic cockpit interface with floating glass charts, node graphs showing multi-agent reasoning paths, dark obsidian surfaces with neon cyan and deep violet highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_U1VvOZuDnDNGXb_MXiEVarv2cEm1TLWZn3f4QJKF_uqOZsh8RR-IsQLc1TzWJXvY21TAHHimsMag40H12qoQ3hLoPtoeib6hwZFHlLp_7jGCtkWvVNLUsafXM8X22VTcdm0QT2T684-O3sNqFHLv9hIf0HpOcBGlMVnrIX6Nu3acI0iSkXEulnr39ggHbJ1UUhByaVt4OBUDyE2imUIrbQICb1av1hTOMOyI9y-DS0FsAexTZ9KP"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4 flex items-center justify-between p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 backdrop-blur-md">
+<div class="flex items-center gap-space-sm font-label-hud text-label-hud text-on-surface-variant">
+<span class="text-secondary font-bold">AGENTS ACTIVE: 8</span>
+<span>CONSENSUS: 99.8%</span>
+</div>
+<span class="font-code-terminal text-label-hud text-secondary-fixed">WS_PULSE: 0.4ms</span>
+</div>
+</div>
+<div class="lg:col-span-5 order-1 lg:order-2 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-space-sm mb-space-md">
+<span class="px-space-sm py-space-xs rounded-DEFAULT bg-secondary-container/20 font-label-hud text-label-hud uppercase text-secondary">PROJ_ID // 02</span>
+<span class="font-label-hud text-label-hud text-secondary-fixed">AUTONOMOUS ORCHESTRATION</span>
+</div>
+<h3 class="font-headline-md text-headline-md uppercase text-primary group-hover:text-secondary transition-colors">
+              CHRONOS HUD: 3D Autonomous AI Agent Command Center
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-md">
+              Mission-critical situational display powered by FastAPI and Next.js 15. Orchestrates asynchronous LangGraph agent swarms that detect, verify, and automatically heal distributed cloud anomalies across multi-region clusters.
+            </p>
+</div>
+<div class="flex flex-wrap gap-space-xs mt-space-lg">
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-secondary-fixed">FastAPI WebSocket</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-secondary-fixed">LangGraph</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-secondary-fixed">Next.js Spatial</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-primary">WebRTC Mesh</span>
+</div>
+<div class="flex items-center gap-space-md mt-space-xl">
+<button class="px-space-lg py-space-sm rounded-DEFAULT bg-secondary-container text-on-secondary-container font-label-caps text-label-caps uppercase hover:bg-secondary transition-all">
+              Launch Agent Matrix
+            </button>
+<button class="px-space-md py-space-sm rounded-DEFAULT bg-surface-container-low text-on-surface hover:text-secondary font-label-hud text-label-hud uppercase transition-all">
+              API Documentation
+            </button>
+</div>
+</div>
+</div>
+<!-- Project 3: NEURO-GRAVITY -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center p-space-xl rounded-xl bg-surface-container/60 backdrop-blur-md group hover:bg-surface-container transition-all">
+<div class="lg:col-span-5 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-space-sm mb-space-md">
+<span class="px-space-sm py-space-xs rounded-DEFAULT bg-tertiary-container/10 font-label-hud text-label-hud uppercase text-tertiary-container">PROJ_ID // 03</span>
+<span class="font-label-hud text-label-hud text-tertiary-fixed">POST-QUANTUM CRYPTO</span>
+</div>
+<h3 class="font-headline-md text-headline-md uppercase text-primary group-hover:text-tertiary-container transition-colors">
+              NEURO-GRAVITY: Quantum-Resistant Neural API Gateway
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-md">
+              High-security ingress proxy combining Rust C-FFI Python extensions with Cython acceleration. Transmits Kyber-1024 encrypted tensor packets at wire speed with sub-millisecond gRPC streaming validation.
+            </p>
+</div>
+<div class="flex flex-wrap gap-space-xs mt-space-lg">
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-tertiary-fixed">Rust Extensions</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-tertiary-fixed">Cython 3.0</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-tertiary-fixed">Kyber-1024</span>
+<span class="font-label-hud text-label-hud px-space-sm py-space-xs rounded-DEFAULT bg-surface-container-high text-primary">gRPC v2</span>
+</div>
+<div class="flex items-center gap-space-md mt-space-xl">
+<button class="px-space-lg py-space-sm rounded-DEFAULT bg-tertiary-container text-on-tertiary-container font-label-caps text-label-caps uppercase hover:bg-tertiary-fixed transition-all">
+              Inspect Gateway
+            </button>
+<button class="px-space-md py-space-sm rounded-DEFAULT bg-surface-container-low text-on-surface hover:text-tertiary-container font-label-hud text-label-hud uppercase transition-all">
+              Rust-Python Benchmarks
+            </button>
+</div>
+</div>
+<div class="lg:col-span-7 relative rounded-xl overflow-hidden bg-surface-container-lowest aspect-video shadow-xl">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Abstract quantum computing architecture visualization showing complex mathematical crystal matrix with illuminated neon green and bright cyan pathways, representing post-quantum neural routing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKek7Zf4CtCxUOIam29xfjfYTGvuUB4iQkl5TtPJjyykbG1PVex053OXJOZ-KETqLGOwwX9oGs0M5Qj8CB_GX3cUZNckUivC-LrF2d2S7PMF65E52XZTbWOIZUFVfcHrWSbikgRfWj5HchRjg4YBrhwbPq6rZT9-T5xt-fHey_9UJY0gft1omVP_Mg80KDAQUf9dw6GJZWp46l81b-M-u3mcWQMDQYsjuh_XrCLtAZeIxh1Yj7cUaH"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4 flex items-center justify-between p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 backdrop-blur-md">
+<div class="flex items-center gap-space-sm font-label-hud text-label-hud text-on-surface-variant">
+<span class="text-tertiary-container font-bold">CRYPTO: KYBER-1024</span>
+<span>DROPPED: 0.00%</span>
+</div>
+<span class="font-code-terminal text-label-hud text-tertiary-fixed">LATENCY: 0.28ms</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: REAL-TIME INTERACTIVE TERMINAL SIMULATION -->
+<section class="w-full bg-surface-container-lowest py-space-3xl relative" id="terminal-section">
+<div class="max-w-[1440px] mx-auto px-margin md:px-gutter-lg">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-space-xl gap-space-md">
+<div>
+<div class="flex items-center gap-space-xs font-label-hud text-label-hud text-primary uppercase mb-space-xs">
+<span>// SECTION 04</span>
+<span>•</span>
+<span>CLI RUNTIME SIMULATOR</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-on-surface tracking-tight">
+            Python <span class="text-primary-container">Antigravity Console</span>
+</h2>
+</div>
+<div class="flex items-center gap-space-sm font-label-hud text-label-hud text-on-surface-variant">
+<span class="inline-block w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span>
+          SOCKET CONNECTED: /dev/ttyS0.orbital
+        </div>
+</div>
+<!-- Holographic CLI Console -->
+<div class="w-full rounded-xl bg-[#09090D] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+<!-- Console Window Top Bar -->
+<div class="h-10 px-space-md bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-3 h-3 rounded-full bg-error/80 inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-[#f59e0b] inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-tertiary-container/80 inline-block"></span>
+<span class="ml-space-md font-label-hud text-label-hud text-on-surface-variant">zsh — suryakiran@orbital-node-2027:~</span>
+</div>
+<div class="flex items-center gap-space-md font-label-hud text-label-hud text-on-surface-variant">
+<span>PYTHON 3.14.0t (main, Oct 24 2027)</span>
+<span class="text-primary-container">NO-GIL ACTIVE</span>
+</div>
+</div>
+<!-- Terminal Body -->
+<div class="p-space-lg font-code-terminal text-code-terminal text-on-surface flex flex-col gap-space-xs min-h-[380px] bg-gradient-to-b from-[#09090D] to-[#07070A]">
+<div class="text-on-surface-variant">
+<span>[2027-10-24 09:14:02 UTC] SYSTEM INITIALIZATION • ARCH: AARCH64_ORBITAL</span>
+</div>
+<div class="text-on-surface-variant">
+<span>Loading tensor weights: [====================] 100% (4.2GB in 0.08s)</span>
+</div>
+<div class="mt-space-sm text-primary">
+<span class="text-tertiary-container font-semibold">&gt; import</span> <span class="text-primary-container">antigravity</span>
+</div>
+<div class="text-on-surface-variant pl-space-md">
+            • AntiGravity module loaded via C-Extension wrapper.<br/>
+            • Earth Gravitational Constant adjusted: 9.80665 m/s² → <span class="text-primary-fixed">0.00000 m/s²</span>.<br/>
+            • Vector field mesh deployed: [32, 32, 32] tensors stabilized.
+          </div>
+<div class="mt-space-sm text-primary">
+<span class="text-tertiary-container font-semibold">&gt; python3</span> <span class="text-primary-container">cluster_telemetry.py</span> <span class="text-on-surface-variant">--mode=autonomous --target=leo_alpha</span>
+</div>
+<div class="text-secondary pl-space-md">
+            [+] Initiating asynchronous FastAPI swarm (16 workers)...<br/>
+            [+] Connecting to Milvus High-Dim cluster: ping 0.42ms.<br/>
+            [+] Model status: LangGraph Agent Router ONLINE.<br/>
+            [+] System throughput: 2,410,290 requests/sec. Latency: 1.2ms.
+          </div>
+<!-- Dynamic Output Stream Container -->
+<div class="text-tertiary-container pl-space-md flex flex-col gap-1 mt-1" id="terminal-stream">
+<span>[+] REALTIME TELEMETRY: Node #07 orbital sync nominal. Memory delta: -0.04%</span>
+</div>
+<!-- Interactive CLI Input Line -->
+<div class="flex items-center gap-space-xs mt-space-md text-primary">
+<span class="text-tertiary-container font-bold">suryakiran@orbital:~$</span>
+<input autocomplete="off" class="bg-transparent border-none outline-none font-code-terminal text-code-terminal text-primary w-full focus:ring-0 placeholder:text-on-surface-variant/40" id="cli-input" placeholder="Type 'status', 'tensor', 'ping', or 'clear'..." type="text"/>
+<span class="w-2 h-4 bg-primary-container inline-block animate-pulse"></span>
+</div>
+</div>
+<!-- Terminal Quick Action Triggers -->
+<div class="px-space-lg py-space-sm bg-surface-container-low/70 flex flex-wrap items-center justify-between gap-space-sm text-label-hud font-label-hud text-on-surface-variant">
+<div class="flex items-center gap-space-sm">
+<span>QUICK PRESETS:</span>
+<button class="px-space-xs py-0.5 rounded-DEFAULT bg-surface-container hover:text-primary transition-colors" onclick="runCommand('status')">[ --status ]</button>
+<button class="px-space-xs py-0.5 rounded-DEFAULT bg-surface-container hover:text-primary transition-colors" onclick="runCommand('tensor')">[ --tensor-check ]</button>
+<button class="px-space-xs py-0.5 rounded-DEFAULT bg-surface-container hover:text-primary transition-colors" onclick="runCommand('ping')">[ --ping-nodes ]</button>
+</div>
+<span class="text-primary-fixed">SESSION ENCRYPTED // CURVE25519</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 5: ANTIGRAVITY DOSSIER & SPEC DOWNLOAD PORTAL -->
+<section class="w-full max-w-[1440px] mx-auto px-margin md:px-gutter-lg py-space-3xl relative" id="dossier">
+<div class="p-space-2xl rounded-xl bg-gradient-to-br from-surface-container via-surface-container-high to-surface-container-lowest backdrop-blur-2xl shadow-[0_0_60px_rgba(0,0,0,0.5)]">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-center">
+<!-- Left Dossier Specs Details -->
+<div class="lg:col-span-8 flex flex-col gap-space-md">
+<div class="flex items-center gap-space-xs font-label-hud text-label-hud text-secondary uppercase">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>VERIFIED ARCHITECTURAL DOSSIER // TECHNICAL WHITE PAPER</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg uppercase text-primary tracking-tight">
+            Antigravity Python Architecture <span class="text-primary-container">Dossier</span> [2027]
+          </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+            Complete technical specification detailing the mathematical foundations of the GIL-free Python asynchronous vector engine, WebGPU spatial shader integration, and multi-agent failover topology in microgravity computing clusters.
+          </p>
+<!-- Cryptographic Metadata Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-md pt-space-md">
+<div class="p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 flex flex-col">
+<span class="font-label-hud text-label-hud text-on-surface-variant uppercase">DOCUMENT DIGEST</span>
+<span class="font-code-terminal text-body-sm text-primary font-semibold mt-space-xs">SHA-256</span>
+<span class="font-label-hud text-[9px] text-on-surface-variant truncate">e3b0c44298fc1c149afbf4c8...</span>
+</div>
+<div class="p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 flex flex-col">
+<span class="font-label-hud text-label-hud text-on-surface-variant uppercase">PAGES / FORM FACTOR</span>
+<span class="font-code-terminal text-body-sm text-secondary font-semibold mt-space-xs">38 PAGES</span>
+<span class="font-label-hud text-[9px] text-on-surface-variant">VECTOR PDF (A4 ORBITAL)</span>
+</div>
+<div class="p-space-sm rounded-DEFAULT bg-surface-container-lowest/80 flex flex-col">
+<span class="font-label-hud text-label-hud text-on-surface-variant uppercase">CLEARANCE LEVEL</span>
+<span class="font-code-terminal text-body-sm text-tertiary-container font-semibold mt-space-xs">PUBLIC ACCESS</span>
+<span class="font-label-hud text-[9px] text-tertiary-fixed">UNRESTRICTED SPEC</span>
+</div>
+</div>
+<!-- Download Action Controls -->
+<div class="flex flex-wrap items-center gap-space-md pt-space-lg">
+<a class="inline-flex items-center gap-space-sm px-space-xl py-space-md rounded-DEFAULT bg-primary-container text-on-primary-container font-label-caps text-label-caps uppercase hover:bg-primary-fixed hover:text-on-primary-fixed shadow-[0_0_24px_rgba(0,240,255,0.4)] transition-all" download="" href="#">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+              Download Whitepaper [PDF • 14.8 MB]
+            </a>
+<button class="inline-flex items-center gap-space-sm px-space-lg py-space-md rounded-DEFAULT bg-surface-container-lowest text-on-surface hover:text-primary font-label-caps text-label-caps uppercase transition-all">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+              Live Holographic Preview
+            </button>
+</div>
+</div>
+<!-- Right Preview Graphic Mockup -->
+<div class="lg:col-span-4 relative flex items-center justify-center">
+<div class="w-full max-w-sm rounded-xl overflow-hidden bg-surface-container-lowest shadow-[0_0_40px_rgba(0,0,0,0.7)] group">
+<div class="h-8 bg-surface-container-low px-space-md flex items-center justify-between text-label-hud text-on-surface-variant">
+<span>PDF_PREVIEW_VIEWER</span>
+<span class="text-primary-container">PAGE 01 / 38</span>
+</div>
+<div class="p-space-lg flex flex-col gap-space-md bg-[#08080C] min-h-[300px]">
+<div class="flex items-center justify-between pb-space-sm">
+<span class="font-headline-sm text-headline-sm uppercase text-primary">SURYA KIRAN</span>
+<span class="font-label-hud text-label-hud text-secondary">SPEC 2027-V4</span>
+</div>
+<div class="space-y-2">
+<div class="h-2 w-3/4 bg-surface-container-high rounded-full"></div>
+<div class="h-2 w-full bg-surface-container rounded-full"></div>
+<div class="h-2 w-5/6 bg-surface-container rounded-full"></div>
+<div class="h-2 w-1/2 bg-surface-container-highest rounded-full"></div>
+</div>
+<div class="my-space-md p-space-sm rounded-DEFAULT bg-surface-container-low">
+<!-- Mathematical formula visual simulation -->
+<div class="font-code-terminal text-label-hud text-tertiary-container">
+                  ∇ × B - ∂E/∂t = μ&amp;sub0 (J + ε&amp;sub0 ∂P/∂t)<br/>
+                  lim_{g → 0} ∫ Ψ(x, t) dx = 1.0000
+                </div>
+</div>
+<div class="space-y-2">
+<div class="h-2 w-full bg-surface-container rounded-full"></div>
+<div class="h-2 w-4/5 bg-surface-container rounded-full"></div>
+</div>
+<div class="mt-auto flex items-center justify-between pt-space-md">
+<span class="font-label-hud text-[9px] text-on-surface-variant">ORBITAL CIPHER VALIDATED</span>
+<span class="material-symbols-outlined text-[16px] text-primary-container">qr_code_2</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Client-side Interactive CLI Logic -->
+<script>
+  function runCommand(cmd) {
+    const stream = document.getElementById('terminal-stream');
+    const input = document.getElementById('cli-input');
+    
+    if (!stream) return;
+    
+    const time = new Date().toISOString().substring(11, 19);
+    let output = '';
+
+    if (cmd === 'status') {
+      output = `[${time}] STATUS: All 128 orbital nodes synchronized. Mean latency: 0.94ms. Zero-G gravity compensators 100% active.`;
+    } else if (cmd === 'tensor') {
+      output = `[${time}] TENSOR: PyTorch 2.6 CUDA/ROCm memory allocated: 12.4GB / 32GB. Quantization: 4-bit INT active. Inference ready.`;
+    } else if (cmd === 'ping') {
+      output = `[${time}] PING: geo-orbit-alpha: 0.12ms | leo-gateway-04: 0.44ms | earth-relay-delhi: 3.82ms. 0% packet loss.`;
+    } else if (cmd === 'clear') {
+      stream.innerHTML = '';
+      return;
+    } else {
+      output = `[${time}] COMMAND_UNKNOWN: '${cmd}'. Available: status, tensor, ping, clear`;
+    }
+
+    const newLine = document.createElement('div');
+    newLine.className = 'text-primary-fixed-dim';
+    newLine.innerHTML = `&gt; ${cmd}<br><span class="text-on-surface-variant">${output}</span>`;
+    stream.appendChild(newLine);
+    
+    if (input) input.value = '';
+    stream.parentElement.scrollTop = stream.parentElement.scrollHeight;
+  }
+
+  const cliInput = document.getElementById('cli-input');
+  if (cliInput) {
+    cliInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const val = this.value.trim().toLowerCase();
+        if (val) {
+          runCommand(val);
+        }
+      }
+    });
+  }
+</script></main><footer class="w-full bg-surface-container-lowest"><div class="max-w-[1440px] mx-auto px-margin md:px-gutter-lg py-space-2xl"><div class="grid grid-cols-1 md:grid-cols-4 gap-gutter-lg mb-space-2xl"><div class="flex flex-col gap-space-sm md:col-span-2"><span class="font-headline-sm text-headline-sm uppercase tracking-wider text-primary">SURYA.KIRAN</span><p class="font-body-sm text-body-sm text-on-surface-variant max-w-md">Next-generation Python Full Stack &amp; Neural Tensor Systems Engineer architecting quantum telemetry interfaces and zero-gravity computing paradigms.</p><div class="flex items-center gap-space-md mt-space-md"><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span><span class="font-label-hud text-label-hud text-on-surface-variant">TENSOR-CORE: NOMINAL</span></div><div class="flex items-center gap-space-xs"><span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span><span class="font-label-hud text-label-hud text-on-surface-variant">FLUID_DYNAMICS: ACTIVE</span></div></div></div><div class="flex flex-col gap-space-sm"><span class="font-label-caps text-label-caps uppercase text-secondary">Telemetry Matrix</span><div class="flex flex-col gap-space-xs font-label-hud text-label-hud text-on-surface-variant"><span>NODE: DELTA-09</span><span>UPTIME: 99.998%</span><span>FREQ: 4.88 GHz CLUSTER</span><span>SYS_STATUS: OPTIMAL</span></div></div><div class="flex flex-col gap-space-sm"><span class="font-label-caps text-label-caps uppercase text-secondary">Command Link</span><div class="flex flex-col gap-space-xs font-label-hud text-label-hud text-on-surface-variant"><span>ORBIT_LOC: 28.6139 N, 77.2090 E</span><span>PROTOCOL: TCP/QUIC HYBRID</span><span>AUTH: 4096-BIT CURVE25519</span><span>SHELL: ZSH_ORBITAL_v4</span></div></div></div><div class="pt-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-md text-on-surface-variant"><div class="flex items-center gap-space-md"><span class="font-label-hud text-label-hud uppercase tracking-widest text-primary">2027 QUANTUM PROTOCOL // SURYA KIRAN</span><span class="font-label-hud text-label-hud">ALL COGNITIVE ASSETS RESERVED</span></div><div class="flex items-center gap-space-lg font-label-hud text-label-hud"><span>LATENCY_SYNC: VERIFIED</span><span>ZERO-G COMPUTING</span></div></div></div></footer></body></html>

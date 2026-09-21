@@ -1,9 +1,12 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Navbar from './Navbar';
 import Hero from './Hero';
+import AntigravityCapabilityMatrix from './AntigravityCapabilityMatrix';
+import Projects from './Projects';
+import AntigravityTerminal from './AntigravityTerminal';
+import AntigravityDossierSection from './AntigravityDossierSection';
 import About from './About';
 import Skills from './Skills';
-import Projects from './Projects';
 import ContactForm from './ContactForm';
 import BackToTop from './BackToTop';
 import Footer from './Footer';
@@ -48,8 +51,8 @@ export default function PublicPortfolio() {
   };
 
   return (
-    <div className="min-vh-100 d-flex flex-column position-relative">
-      {/* Navigation */}
+    <div className="min-vh-100 d-flex flex-column position-relative" style={{ background: '#08080c', color: '#e4e1e8' }}>
+      {/* 2027 Antigravity HUD Navigation */}
       <Navbar
         theme={theme}
         toggleTheme={toggleTheme}
@@ -60,18 +63,34 @@ export default function PublicPortfolio() {
 
       {/* Main Page Layout */}
       <main className="flex-grow-1">
+        {/* Section 1: Hero / Holographic Quantum Spherical HUD */}
         <Hero
           onOpenCV={() => setIsCVOpen(true)}
           onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
           isReducedMotion={isReducedMotion}
         />
+
+        {/* Section 2: Python Full Stack Capability Matrix (Bento Grid) */}
+        <AntigravityCapabilityMatrix />
+
+        {/* Section 3: Flagship Autonomous Systems & Architecture X-Ray */}
+        <Projects />
+
+        {/* Section 4: Real-Time Interactive CLI Simulator */}
+        <AntigravityTerminal />
+
+        {/* Section 5: Antigravity Architectural Dossier & Whitepaper Portal */}
+        <AntigravityDossierSection />
+
+        {/* Engineering Background & Deep Knowledge Base */}
         <About />
         <Skills />
-        <Projects />
+
+        {/* Secure Contact & Email Dispatch Link */}
         <ContactForm />
       </main>
 
-      {/* Footer & Floating Widgets */}
+      {/* Cybernetic HUD Footer */}
       <Footer />
       <BackToTop />
       <SystemStatus />

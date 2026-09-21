@@ -591,3 +591,397 @@ code, pre, .font-code {
   opacity: 0.85;
 }
 
+/* ============================================================
+   ANTIGRAVITY QUANTUM CORE DESIGN SYSTEM (2027 SPECIFICATION)
+   ============================================================ */
+
+:root {
+  /* Surface Stratification */
+  --ag-surface: #131317;
+  --ag-surface-dim: #131317;
+  --ag-surface-bright: #39393e;
+  --ag-surface-lowest: #0e0e12;
+  --ag-surface-low: #1b1b20;
+  --ag-surface-container: #1f1f24;
+  --ag-surface-high: #2a292e;
+  --ag-surface-highest: #353439;
+  --ag-void-base: #08080c;
+
+  /* Typography Text Tiers */
+  --ag-on-surface: #e4e1e8;
+  --ag-on-surface-variant: #b9cacb;
+  --ag-outline: #849495;
+  --ag-outline-variant: #3b494b;
+
+  /* Photonic Accent Spectrum */
+  --ag-primary: #dbfcff;
+  --ag-primary-core: #00f0ff;
+  --ag-primary-fixed: #7df4ff;
+  --ag-primary-fixed-dim: #00dbe9;
+  --ag-on-primary: #00363a;
+  
+  --ag-secondary: #d0bcff;
+  --ag-secondary-core: #8b5cf6;
+  --ag-secondary-container: #571bc1;
+  --ag-secondary-fixed: #e9ddff;
+  
+  --ag-tertiary: #d8ffe7;
+  --ag-tertiary-core: #10b981;
+  --ag-tertiary-container: #65f2b5;
+  --ag-tertiary-fixed: #6ffbbe;
+  
+  --ag-border-hairline: rgba(255, 255, 255, 0.08);
+  --ag-border-cyan: rgba(0, 240, 255, 0.25);
+  --ag-border-violet: rgba(139, 92, 246, 0.25);
+  --ag-border-emerald: rgba(16, 185, 129, 0.25);
+}
+
+/* Typography Hierarchy */
+.font-display-hero {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(2.5rem, 5vw, 4.5rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.font-headline-lg {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(1.8rem, 3.2vw, 2.75rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.font-headline-md {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.font-headline-sm {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.font-body-lg {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 1.125rem !important;
+  line-height: 1.7 !important;
+}
+
+.font-body-md {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.9375rem !important;
+  line-height: 1.6 !important;
+}
+
+.font-body-sm {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.5 !important;
+}
+
+.font-code-terminal {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.6 !important;
+}
+
+.font-label-caps {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  line-height: 1rem !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+}
+
+.font-label-hud {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.625rem !important;
+  font-weight: 500 !important;
+  line-height: 0.875rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+/* Layer 1: Glassmorphism Panels */
+.quantum-card {
+  position: relative;
+  background: rgba(31, 31, 36, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--ag-border-hairline);
+  border-radius: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quantum-card:hover {
+  background: rgba(42, 41, 46, 0.82);
+  border-color: var(--ag-border-cyan);
+  box-shadow: 0 0 25px -5px rgba(0, 240, 255, 0.22);
+}
+
+.quantum-card-lowest {
+  background: rgba(14, 14, 18, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--ag-border-hairline);
+  border-radius: 0.5rem;
+}
+
+/* Hairline HUD Crosshairs (+) */
+.hud-crosshair-tl {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(0, 240, 255, 0.4);
+  pointer-events: none;
+  user-select: none;
+}
+.hud-crosshair-tr {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(0, 240, 255, 0.4);
+  pointer-events: none;
+  user-select: none;
+}
+.hud-crosshair-bl {
+  position: absolute;
+  bottom: 6px;
+  left: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(0, 240, 255, 0.4);
+  pointer-events: none;
+  user-select: none;
+}
+.hud-crosshair-br {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgba(0, 240, 255, 0.4);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Micro HUD Pills & Badges */
+.hud-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  background: rgba(14, 14, 18, 0.7);
+  border: 1px solid var(--ag-border-hairline);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hud-pill-cyan {
+  border-color: rgba(0, 240, 255, 0.3);
+  color: var(--ag-primary-core);
+}
+
+.hud-pill-violet {
+  border-color: rgba(139, 92, 246, 0.3);
+  color: var(--ag-secondary-fixed);
+}
+
+.hud-pill-emerald {
+  border-color: rgba(16, 185, 129, 0.3);
+  color: var(--ag-tertiary-container);
+}
+
+/* Button & Triggers (2027 Specification) */
+.btn-quantum-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 0.25rem;
+  background: var(--ag-primary-core);
+  color: #08080c !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.35);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-quantum-primary:hover {
+  background: var(--ag-primary-fixed);
+  color: #002022 !important;
+  box-shadow: 0 0 36px rgba(0, 240, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-cyber-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.25rem;
+  background: rgba(31, 31, 36, 0.65);
+  color: var(--ag-primary) !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-cyber-ghost:hover {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: var(--ag-primary-core);
+  color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-cyber-violet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: 0.25rem;
+  background: var(--ag-secondary-container);
+  color: #ffffff !important;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.btn-cyber-violet:hover {
+  background: var(--ag-secondary-core);
+  box-shadow: 0 0 32px rgba(139, 92, 246, 0.55);
+  transform: translateY(-1px);
+}
+
+/* Holographic Terminal Styles */
+.terminal-window {
+  background: #09090d;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+}
+
+.terminal-header {
+  height: 2.5rem;
+  background: #131317;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.terminal-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.terminal-body {
+  padding: 1.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: #e4e1e8;
+  background: linear-gradient(180deg, #09090d 0%, #06060a 100%);
+  min-height: 380px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1rem;
+  background-color: var(--ag-primary-core);
+  vertical-align: middle;
+  animation: terminalBlink 1s infinite;
+}
+
+@keyframes terminalBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Telemetry Sparkline Grid */
+.telemetry-strip {
+  background: rgba(14, 14, 18, 0.9);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 0.75rem;
+  padding: 1rem 1.5rem;
+}
+
+/* Ambient Zero-G Quantum Field Glows */
+.quantum-field-ambient-cyan {
+  position: absolute;
+  width: 800px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.08) 0%, rgba(0, 240, 255, 0) 70%);
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.quantum-field-ambient-violet {
+  position: absolute;
+  width: 700px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0) 70%);
+  filter: blur(140px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Pulse animation utility */
+@keyframes agPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.92); }
+}
+
+.animate-ag-pulse {
+  animation: agPulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+
