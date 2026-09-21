@@ -576,41 +576,53 @@ class AdminLoginView(APIView):
                 "message": "Please provide both username and password."
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        user = authenticate(request, username=username, password=password)
-        if not user:
+        try:
+            user = authenticate(request, username=username, password=password)
+            if not user:
+                return Response({
+                    "success": False,
+                    "message": "Invalid username or password credentials."
+                }, status=status.HTTP_401_UNAUTHORIZED)
+
+            if not user.is_active:
+                return Response({
+                    "success": False,
+                    "message": "User account has been deactivated."
+                }, status=status.HTTP_403_FORBIDDEN)
+
+            if not (user.is_staff or user.is_superuser):
+                return Response({
+                    "success": False,
+                    "message": "Access denied. Administrator privileges required."
+                }, status=status.HTTP_403_FORBIDDEN)
+
+            # Issue/get auth token
+            token, _ = Token.objects.get_or_create(user=user)
+
+            try:
+                log_admin_action('LOGIN', 'User', user.id, {'username': user.username})
+            except Exception as log_err:
+                logger.warning(f"Audit log failed on login: {log_err}")
+
+            return Response({
+                "success": True,
+                "token": token.key,
+                "user": {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "is_staff": user.is_staff,
+                    "is_superuser": user.is_superuser
+                },
+                "message": f"Welcome back, {user.username}!"
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f"Login error for '{username}': {e}", exc_info=True)
             return Response({
                 "success": False,
-                "message": "Invalid username or password credentials."
-            }, status=status.HTTP_401_UNAUTHORIZED)
-
-        if not user.is_active:
-            return Response({
-                "success": False,
-                "message": "User account has been deactivated."
-            }, status=status.HTTP_403_FORBIDDEN)
-
-        if not (user.is_staff or user.is_superuser):
-            return Response({
-                "success": False,
-                "message": "Access denied. Administrator privileges required."
-            }, status=status.HTTP_403_FORBIDDEN)
-
-        # Issue/get auth token
-        token, _ = Token.objects.get_or_create(user=user)
-        log_admin_action('LOGIN', 'User', user.id, {'username': user.username})
-
-        return Response({
-            "success": True,
-            "token": token.key,
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "email": user.email,
-                "is_staff": user.is_staff,
-                "is_superuser": user.is_superuser
-            },
-            "message": f"Welcome back, {user.username}!"
-        }, status=status.HTTP_200_OK)
+                "message": "A server error occurred during authentication. Please try again shortly."
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AdminLogoutView(APIView):

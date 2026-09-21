@@ -1,4 +1,5 @@
 import datetime
+import os
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from api.models import (
@@ -20,27 +21,22 @@ class Command(BaseCommand):
         force = options.get('force', False)
         self.stdout.write(self.style.SUCCESS(f"Checking database seed state (force={force})..."))
 
-        # 0. Ensure Admin Superuser Exists (admin / surya007)
-        admin_exists = User.objects.filter(username="admin").exists()
-        if not admin_exists or force:
-            admin_user, admin_created = User.objects.get_or_create(
-                username="admin",
-                defaults={
-                    "email": "suryakiranpjineesh@gmail.com",
-                    "is_staff": True,
-                    "is_superuser": True
-                }
-            )
-            if admin_created or force:
-                admin_user.set_password("surya007")
-                admin_user.is_staff = True
-                admin_user.is_superuser = True
-                admin_user.save()
-                self.stdout.write(f"Admin Superuser: {'Created' if admin_created else 'Reset'} (user: admin).")
-            else:
-                self.stdout.write("Admin Superuser: Already exists (password and permissions preserved).")
-        else:
-            self.stdout.write("Admin Superuser: Already exists (preserved).")
+        # 0. Ensure Admin Superuser Exists (admin / admin007)
+        ADMIN_PASSWORD = os.environ.get('DJANGO_ADMIN_PASSWORD', 'admin007')
+        admin_user, admin_created = User.objects.get_or_create(
+            username="admin",
+            defaults={
+                "email": "suryakiranpjineesh@gmail.com",
+                "is_staff": True,
+                "is_superuser": True
+            }
+        )
+        # Always ensure staff/superuser flags and password are correct
+        admin_user.set_password(ADMIN_PASSWORD)
+        admin_user.is_staff = True
+        admin_user.is_superuser = True
+        admin_user.save()
+        self.stdout.write(f"Admin Superuser: {'Created' if admin_created else 'Updated'} (user: admin, password configured).")
 
         # 1. Profile (Preserve admin changes if record already exists)
         profile_defaults = {
