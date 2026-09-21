@@ -17,7 +17,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         recipient = options['to']
         self.stdout.write(self.style.NOTICE("=================================================="))
-        self.stdout.write(self.style.NOTICE("🔍 Testing Email Delivery Configuration"))
+        self.stdout.write(self.style.NOTICE("[INFO] Testing Email Delivery Configuration"))
         self.stdout.write(self.style.NOTICE("=================================================="))
 
         self.stdout.write(f"EMAIL_BACKEND:       {getattr(settings, 'EMAIL_BACKEND', 'Not Set')}")
@@ -31,7 +31,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Sending test to:     {recipient}\n")
 
         if not getattr(settings, 'EMAIL_HOST_USER', '') or not getattr(settings, 'EMAIL_HOST_PASSWORD', ''):
-            self.stdout.write(self.style.WARNING("⚠️ WARNING: EMAIL_HOST_USER or EMAIL_HOST_PASSWORD is not configured in your environment."))
+            self.stdout.write(self.style.WARNING("[WARNING] EMAIL_HOST_USER or EMAIL_HOST_PASSWORD is not configured in your environment."))
             self.stdout.write(self.style.WARNING("For Gmail SMTP, please set EMAIL_HOST_USER and a 16-character Google App Password in your environment variables.\n"))
 
         from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', '') or getattr(settings, 'EMAIL_HOST_USER', '') or 'suryakiranpjineesh@gmail.com'
@@ -50,11 +50,11 @@ class Command(BaseCommand):
                 to=[recipient],
             )
             msg.send(fail_silently=False)
-            self.stdout.write(self.style.SUCCESS(f"✅ SUCCESS: Test email successfully sent to {recipient}! Check your inbox/spam folder."))
+            self.stdout.write(self.style.SUCCESS(f"[SUCCESS] Test email successfully sent to {recipient}! Check your inbox/spam folder."))
         except Exception as e:
-            self.stdout.write(self.style.ERROR(f"❌ FAILED: Could not send email via SMTP."))
+            self.stdout.write(self.style.ERROR(f"[FAILED] Could not send email via SMTP."))
             self.stdout.write(self.style.ERROR(f"Error details: {e}"))
-            self.stdout.write("\n💡 Troubleshooting Tips:")
+            self.stdout.write("\nTroubleshooting Tips:")
             self.stdout.write("1. Ensure 2-Step Verification is enabled on your Google Account.")
             self.stdout.write("2. Generate a 16-character Google App Password at: https://myaccount.google.com/apppasswords")
-            self.stdout.write("3. Add EMAIL_HOST_USER and EMAIL_HOST_PASSWORD to your Render environment variables.")
+            self.stdout.write("3. Add EMAIL_HOST_USER and EMAIL_HOST_PASSWORD to your Render / local .env environment variables.")
